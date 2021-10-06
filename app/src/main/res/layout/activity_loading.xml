@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FBF8E9"
+    tools:context=".LoadingActivity">
+
+    <TextView
+        android:id="@+id/persentValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0%"
+        android:textSize="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:layout_above="@+id/progressBar" />
+
+    <com.dinuscxj.progressbar.CircleProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_centerInParent="true"
+        app:progress_end_color="#EDDE59"
+        app:progress_start_color="#87F1FF"
+        app:progress_stroke_cap="round"
+        app:progress_stroke_width="10dp"
+        app:progress_text_size="0dp"
+        app:style="solid_line" />
+
+    <ImageView
+        android:id="@+id/gif_loading"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="50dp"
+        android:layout_height="50dp"/>
+</RelativeLayout>
