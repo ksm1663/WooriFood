@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.dinuscxj.progressbar.CircleProgressBar;
 
+// 커밋테스트20211007
 
 public class MainActivity extends AppCompatActivity {
 
