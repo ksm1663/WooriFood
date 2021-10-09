@@ -1,24 +1,28 @@
 package com.wooriss.woorifood;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+/*
+ - 작성일 : 2021.10.03
+ - 작성자 : 김성미
+ - 기능 : 다운받은 금융기관 코드 파일을 데이터베이스 (sql) 저장
+ - 비고 : LoadingActivity 가 호출
+ - 수정이력 :
+*/
+
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 44;
+    public static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "CODE.DB";
     public static final String TABLE_NAME = "TB_CODE";
-
-    public static final int CNT_LINE = 30300; // 하드코딩 ㅠㅠ !!! (로딩 프로그래스바용)
-    private boolean isTableCreate = false;
+    private static boolean isTableCreate = false;
 
 
     private static final String SQL_CREATE_ENTRIES =
             "create table " + TABLE_NAME + " " +
-                    //"(_id integer primary key autoincrement," +
                     "(code integer primary key, " + // 금융기관 고유 코드
                     "name text," + // 금융기관명
                     "branch_name text," + // 금융기관지점명
@@ -31,12 +35,8 @@ public class DBHelper extends SQLiteOpenHelper {
             "drop table if exists " +TABLE_NAME;
 
 
-
-//    Context mContext;
     public DBHelper (Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION); // 두번째 인자는 DB파일명
-        Log.d("디버그", " DBHelper 생성자 호출");
-//        mContext = context;
+        super(context, DATABASE_NAME, null, DATABASE_VERSION); // 두번째 인자는 DB 파일명
     }
 
     // 앱 설치 후 SQLiteOpenHelper가 최초로 이용되는 순간 한 번 호출출
@@ -45,22 +45,23 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         isTableCreate = true;
-        Log.d("디버그", getClass().getName() + " 테이블 생성");
         db.execSQL(SQL_CREATE_ENTRIES);
     }
 
-    // 데이터베이스 버전이 변경될 때마다 호출
-    // 당 클래서 생성자에 전달되는 버전 변경될 때마다 호출, 테이블 스키마 변경하기 위한 용도
-    // 버전 변경되지 않으면 미호
+    // 데이터베이스 버전이 변경될 때만 호출
+    // 본 클래스 생성자에 전달되는 버전 변경될 때마다 호출, 테이블 스키마 변경하기 위한 용도
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d("디버그", " 현재 버전 : " + oldVersion + " / 뉴 버전 : " + newVersion);
-        Log.d("디버그", " 테이블 지우고 다시 만들기");
+        Log.d("plz", " curVer : " + oldVersion + " , newVer : " + newVersion);
+        Log.d("plz", " drop table start!! ");
         db.execSQL(SQL_DELETE_ENTRIES);
         onCreate(db);
     }
 
-    // 데이터 입력
+    // 테이블에 데이터 insert
+    // 한 줄 씩 바로 insert 하는 방식 (현재 미사용)
+    /*
+
     public void insertToTable (SQLiteDatabase db, String str) {
         String strTmp;
         String[] splitTmp;
@@ -69,22 +70,35 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.execSQL("insert into " + DBHelper.TABLE_NAME + " (code, name, branch_name, tel, fax, zip, addr) values (?,?,?,?,?,?,?)",
                 splitTmp);
+    }
+    */
 
+    // 테이블에 데이터 insert
+    // 500 라인 씩 받아서 union 사용하여 한번에 insert 방식 (더 빠르다고 해서 해봄.. 빠른거 같기도하고...)
+    private StringBuilder sql = null;
+    public void insertToTable2 (SQLiteDatabase db, String str, int total, int cur) {
+        String [] splitTmp = str.split("\\|");
+        if (cur == 1) {
+            sql = new StringBuilder();
+            sql.append("INSERT INTO " + DBHelper.TABLE_NAME +
+                                    " (code, name, branch_name, tel, fax, zip, addr) ");
+        }
+
+        if (cur%500 == 0) {
+            db.execSQL (sql.toString().replaceFirst("UNION ", ""));
+            sql.setLength(0);
+            sql.append("INSERT INTO " + DBHelper.TABLE_NAME +
+                    " (code, name, branch_name, tel, fax, zip, addr) ");
+        }
+
+        String strTmp = "";
+        for (String tmp:splitTmp) {
+            strTmp += " '" + tmp + "',";
+        }
+        strTmp = strTmp.substring(0, strTmp.length()-1);
+        sql.append("UNION SELECT " + strTmp);
     }
 
 
-    // 테이블 있는지 여부 확인
-    public static boolean isTableExist (SQLiteDatabase db, String tableName) {
-        boolean b = false;
-        Cursor csr = db.query("sqlite_master", null, "name=? and type='table'", new String[]{tableName},null,null,null);
-        Log.d("디버그", "테이블 수 : " + csr.getCount());
-        if (csr.getCount() > 0 )
-            b = true;
-        csr.close();
-        return b;
-    }
-
-    public boolean isTableCreate () {
-        return isTableCreate;
-    }
+    public boolean isTableCreate () { return isTableCreate; }
 }
