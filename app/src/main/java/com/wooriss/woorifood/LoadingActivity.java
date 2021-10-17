@@ -3,7 +3,9 @@ package com.wooriss.woorifood;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,12 +21,12 @@ import com.dinuscxj.progressbar.CircleProgressBar;
 */
 
 public class LoadingActivity extends AppCompatActivity {
-
     public static Activity loadingActivity;
+    private LoginDialog ld;
 
-    CircleProgressBar progressBar;
-    TextView persent;
-    ImageView loadingImg;
+    private CircleProgressBar progressBar;
+    private TextView persent;
+    private ImageView loadingImg;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -37,11 +39,20 @@ public class LoadingActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         loadingImg = findViewById(R.id.gif_loading);
 
+
+        Animation ani_circle;
+        ani_circle = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.ani_loading_scale);
+        ImageView loadCircle;
+        loadCircle = findViewById(R.id.loading_circle);
+        loadCircle.startAnimation(ani_circle);
+
+
         // 커스텀 프로그스바 세팅
-        Glide.with(this).load(R.drawable.loading).override(50,50).into(loadingImg);
+//        Glide.with(this).load(R.drawable.loading_bee).override(50,50).into(loadingImg);
+        Glide.with(this).load(R.drawable.loading_bee).into(loadingImg);
 
         // 파일다운로드 시작
-       DownloadFile dlf = new DownloadFile(this);
+        DownloadFile dlf = new DownloadFile(this);
         dlf.execute();
 
     }
@@ -53,23 +64,38 @@ public class LoadingActivity extends AppCompatActivity {
         // 액티비티 종료할 때 애니메이션 없애기
         overridePendingTransition(0,0);
 
-        // 액티비티 불러올 때 애니메이션 없애기
+
+        //
+
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
-        // 메인 액티비티 호출
+        intent.putExtra("id", getID());
         startActivity(intent);
 
     }
 
 
-    public void setTextView(String txt) {
-        ((TextView)findViewById(R.id.persentValue)).setText(txt);
+    public void setTextView() {
+        ((TextView)findViewById(R.id.persentValue)).setText(progressBar.getProgress() + "%");
     }
 
     public void setProgressBar(int all, int cur) {
         double tmp = (double)cur / (double) all * 100 ;
         progressBar.setProgress((int)tmp);
     }
+
+
+    // 로그인 다이얼로그 생성
+    public void showLoginDialog (View view) {
+        ld = new LoginDialog(this);
+    }
+
+    //
+    private String getID () {
+        return ld.id.getText().toString();
+    }
+
+
 
 }

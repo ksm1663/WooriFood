@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">WooriFood</string>
     <string name="code_file">codefilex</string>
-    <string name="DATABAC">code.db</string>
 </resources>

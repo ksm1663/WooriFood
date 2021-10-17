@@ -1,38 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FBF8E9"
+    android:background="@color/loadingBack"
     tools:context=".LoadingActivity">
 
-    <TextView
-        android:id="@+id/persentValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0%"
-        android:textSize="30dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:layout_above="@+id/progressBar" />
 
-    <com.dinuscxj.progressbar.CircleProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:layout_centerInParent="true"
-        app:progress_end_color="#EDDE59"
-        app:progress_start_color="#87F1FF"
-        app:progress_stroke_cap="round"
-        app:progress_stroke_width="10dp"
-        app:progress_text_size="0dp"
-        app:style="solid_line" />
+    <!-- 배경 동그라미 감싸는 레이아웃 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top|center">
+        <ImageView
+            android:id="@+id/loading_circle"
+            android:layout_width="405dp"
+            android:layout_height="405dp"
+            android:layout_marginTop="-30dp"
+            android:src="@drawable/loading_circle" />
+    </LinearLayout>
 
+    <!-- 로고 감싸는 레이아웃 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top|center">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="430dp"
+            android:layout_marginTop="-40dp"
+            android:src="@drawable/loading_logo" />
+    </LinearLayout>
+
+
+    <!--  밑부분 배경 그림과 윗부분 세로비율 정하는 레이아웃 (프로그레스바 안겹치게) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--  상단 비율 부분 레이아  -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:gravity="bottom|center">
+
+            <!-- 퍼센티지 표시하는 뷰 : 안예뻐서 지움  -->
+            <TextView
+                android:id="@+id/persentValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:textSize="0dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone"
+                android:layout_above="@+id/progressBar" />
+
+            <!-- 커스텀 프로그래스바  -->
+            <com.dinuscxj.progressbar.CircleProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                app:progress_end_color="#D7CCB5"
+                app:progress_start_color="#D7CCB5"
+                app:progress_stroke_cap="round"
+                app:progress_stroke_width="10dp"
+                app:progress_text_size="0dp"
+                app:style="solid"
+                app:progress_background_color="@color/loadingBack" />
+
+
+
+
+        </LinearLayout>
+
+
+        <!--  단 비율 부분 레이어  -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3.5"
+            android:orientation="vertical"
+            android:layout_gravity="bottom|center">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/loading_circle" />
+
+        <ImageView
+            android:layout_width="600dp"
+            android:layout_height="600dp"
+            android:layout_marginTop="-160dp"
+            android:layout_marginLeft="-110dp"
+            android:src="@drawable/loading_people" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+
+    <!--  움직이는 위치 아이콘 : 안예뻐저 지움  -->
     <ImageView
         android:id="@+id/gif_loading"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_width="50dp"
-        android:layout_height="50dp"/>
-</RelativeLayout>
+        android:layout_width="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_height="match_parent"/>
+
+
+
+</FrameLayout>

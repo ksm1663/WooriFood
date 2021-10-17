@@ -28,8 +28,8 @@ import java.net.URL;
 // Result : doInBackground 리턴 값으로 onPostExecute 파라미터 타
 public  class DownloadFile extends AsyncTask<String, Integer, Long> {
 
-    private int total_line = 0;
-    Context mContext;
+    private int total_line = 1;
+    private Context mContext;
 
     // 생성
     public DownloadFile (Context context) {
@@ -139,7 +139,7 @@ public  class DownloadFile extends AsyncTask<String, Integer, Long> {
     protected void onProgressUpdate(Integer... values) {
         // 프로그래스바에 값 전달 (전체 값, 현재 값)
         ((LoadingActivity)mContext).setProgressBar(total_line, values[0]);
-        ((LoadingActivity)mContext).setTextView(values[0].toString());
+        ((LoadingActivity)mContext).setTextView();
     }
 
     // AsyncTask 종료 시 호출
@@ -149,7 +149,7 @@ public  class DownloadFile extends AsyncTask<String, Integer, Long> {
         Log.d("plz", getClass().getName() + " : result : " + result);
         // 완료된 값 ui 표시
         ((LoadingActivity)mContext).setProgressBar(total_line, total_line);
-        ((LoadingActivity)mContext).setTextView("끝");
+        ((LoadingActivity)mContext).setTextView();
 
         // 로딩작업 끝난 후 다음 단계 진행
         if (result == null){ // 다운로드 할 내용이 없었어도 로딩화면 2초 보여주다가 로딩화면 종료
@@ -157,12 +157,15 @@ public  class DownloadFile extends AsyncTask<String, Integer, Long> {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    LoadingActivity.loadingActivity.finish();
+                    //LoadingActivity.loadingActivity.finish(); // 로딩화면종료
+                    ((LoadingActivity)mContext).showLoginDialog(null); // 로그인 다이얼로그 호출
                 }
             }, 2000);
         } else if (result == 0 ) { // 다운 받았는데 데이터가 0인 경우,, 아직 없음
-        } else
-            LoadingActivity.loadingActivity.finish(); // 로딩화면 종료
+        } else {
+            //LoadingActivity.loadingActivity.finish(); // 로딩화면 종료
+            ((LoadingActivity)mContext).showLoginDialog(null); // 로그인 다이얼로그 호출
+        }
 
     }
 
