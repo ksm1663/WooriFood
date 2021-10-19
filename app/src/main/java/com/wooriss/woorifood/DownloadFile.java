@@ -18,9 +18,11 @@ import java.net.URL;
  - 작성자 : 김성미
  - 기능 : 금융결제원이 제공하는 금융기관은행코드 파일 다운로드 받아옴
  - 비고 : 1번 연결 재시도 후에도 연결 안될 경우에는 ? (아직 그런적없음)
+         API 30 부터는 AsyncTask 지원종료됨 ㅠㅠ (지금도 30인데 왜 되는거지) *** 변경 필수 ***
  - 수정이력 :
     2021.10.04 다운 중 금결원 서버 끊기는 문제 발생 시 최대 1번 연결 재시도하도록 수정  (수정 : 김성미)
 */
+
 
 // 인자 : <Params, Progress, Result>
 // Params : doInBackground 파라미터 타입. execute 메소드 인자 값
@@ -29,10 +31,11 @@ import java.net.URL;
 public  class DownloadFile extends AsyncTask<String, Integer, Long> {
 
     private int total_line = 1;
-    private Context mContext;
+    private final Context mContext;
 
     // 생성
     public DownloadFile (Context context) {
+        Log.d("plz",getClass().getName() + " Constructor of AsyncTask");
         mContext = context;
     }
 
@@ -41,7 +44,7 @@ public  class DownloadFile extends AsyncTask<String, Integer, Long> {
     // 로딩 중 이미지를 띄워놓거나, 스레드 작업 이전에 수행할 동작 구현
     @Override
     protected void onPreExecute() {
-        Log.d("디버그", getClass().getName() + " : 1111");
+        Log.d("plz", getClass().getName() + " : 1111");
     }
 
     // doInBackground() : 새로 만든 쓰레드에서 백그라운드 작업 수행. execute() 메소드를 호출할 때 사용된 파라미터 전달 받음
@@ -91,7 +94,8 @@ public  class DownloadFile extends AsyncTask<String, Integer, Long> {
             } finally {
                 Log.d("plz", getClass().getName() + "HttpURLConnection : " + httpRes);
                 if (httpRes != HttpURLConnection.HTTP_OK)
-                    return null;
+                    Log.d("plz", getClass().getName() + "HttpURLConnection - FAIL : " + httpRes);
+                    //return null;
             }
             // 요청한 URL에서 오는 파일데이터를 BufferedReader 로 받기
             is = conn.getInputStream();
@@ -112,10 +116,11 @@ public  class DownloadFile extends AsyncTask<String, Integer, Long> {
                 total++;
 
                 // sql insert 시작
-                helper.insertToTable2(db, line, total_line, total);
+                helper.insertToTable2(db, line, total, false);
                 // 프로그래스바 ui 업데이트
                 publishProgress(total);
             }
+            helper.insertToTable2(db, line, total, true);
             Log.d("plz", getClass().getName() + " total line count : " + total); // (21.10.10 기준 30309)
             db.setTransactionSuccessful();
             reader.close();
@@ -162,6 +167,7 @@ public  class DownloadFile extends AsyncTask<String, Integer, Long> {
                 }
             }, 2000);
         } else if (result == 0 ) { // 다운 받았는데 데이터가 0인 경우,, 아직 없음
+            Log.d("plz", getClass().getName() + "None downloaded data");
         } else {
             //LoadingActivity.loadingActivity.finish(); // 로딩화면 종료
             ((LoadingActivity)mContext).showLoginDialog(null); // 로그인 다이얼로그 호출

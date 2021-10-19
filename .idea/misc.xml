@@ -11,8 +11,10 @@
         <entry key="app/src/main/res/layout/activity_loading.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.5088541666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_searchbranch.xml" value="0.315625" />
         <entry key="app/src/main/res/layout/ani_loading_scale.xml" value="0.303125" />
-        <entry key="app/src/main/res/layout/dialog_login.xml" value="0.5088541666666667" />
+        <entry key="app/src/main/res/layout/dialog_login.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/dialog_searchbranch.xml" value="0.315625" />
       </map>
     </option>
   </component>

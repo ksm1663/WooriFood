@@ -3,20 +3,16 @@ package com.wooriss.woorifood;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /*
  - 작성일 : 2021.10.03
@@ -29,74 +25,74 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MainActivity extends AppCompatActivity {
 
     private TextView mainText;
-    private Context loginContext;
 
-    private String id;
+    private FirebaseUser user;
+    private FirebaseDatabase mDatabase;
 
-    FirebaseAuth auth;
-    FirebaseUser user;
-    FirebaseDatabase fdb;
-    DatabaseReference dbr;
+    private User u;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.ani_fadein,R.anim.ani_fadeout);
         setContentView(R.layout.activity_main);
 
-        Intent intent = getIntent();
-        id = intent.getStringExtra("id");
+        findViews();
+    }
 
-        mainText = findViewById(R.id.mainText);
-        mainText.setText(id);
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-
-
-        //auth = FirebaseAuth.getInstance();
-        //auth.getCurrentUser();
-
-
-        //user = auth.getCurrentUser();
-
-
-        dbr = FirebaseDatabase.getInstance().getReference();//fdb.getReference();
-        //String tmp  = fdb.getReference().child("data-sikdang").child("039230").child("name").se;
-
-        dbr.child("data-sikdang").child("039230").child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        // 데이터베이스 읽기  - 한번 읽기 (로드된 후 변경되지 않거나 능동적으로 수신대기할 필요 없는 경우 사용)
+        mDatabase.getReference().child("users").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", task.getException());
-                }
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                u = dataSnapshot.getValue(User.class);
+                if (u==null)
+                    Log.d("plz", "There is no user data");
                 else {
-                    String tmp = String.valueOf(task.getResult().getValue());
-                    mainText.setText(tmp);
-
+                    mainText.setText(u.getBranch());
+                    //for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    //    Log.d("MainActivity", "Single ValueEventListener : " + snapshot.getValue());
+                    //}
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("plz", "onCancelled of addListenerForSingleValueEvent");
             }
         });
 
-/*
-        if(user!=null) {
-            Log.d("plz", "원래 있던애!!!");
-
-        } else {
-            auth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-
-                        user = task.getResult().getUser();
-                        Log.d("plz", "성공! : " + user.getUid());
-
-                    } else {
-                        Log.d("plz", "실패!!!");
-                    }
+/*        // java.lang.Exception: Client is offline 가 자주 발생하네...
+        mDatabase.getReference().child("users").child(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.d("plz", "Error getting data", task.getException());
                 }
-            });
-        }
-        */
+                else {
+                    u = task.getResult().getValue(User.class);
+                    mainText.setText(u.getBranch());
+                }
+            }
+        });*/
 
+
+    }
+
+
+    // 화면 구성요소 정의
+    private void findViews() {
+        mainText = findViewById(R.id.mainText);
+
+        mDatabase = FirebaseDatabase.getInstance();
+
+        Intent intent = getIntent();
+        user = intent.getParcelableExtra("USER_INFO");
     }
 
 

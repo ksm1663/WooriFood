@@ -15,7 +15,8 @@ import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 24;
+
+    public static final int DATABASE_VERSION = 33;
     private static final String DATABASE_NAME = "CODE.DB";
     public static final String TABLE_NAME = "TB_CODE";
     private static boolean isTableCreate = false;
@@ -23,7 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES =
             "create table " + TABLE_NAME + " " +
-                    "(code integer primary key, " + // 금융기관 고유 코드
+                    "(code text primary key, " + // 금융기관 고유 코드
                     "name text," + // 금융기관명
                     "branch_name text," + // 금융기관지점명
                     "tel text," + // 전화번호
@@ -74,29 +75,38 @@ public class DBHelper extends SQLiteOpenHelper {
     */
 
     // 테이블에 데이터 insert
-    // 500 라인 씩 받아서 union 사용하여 한번에 insert 방식 (더 빠르다고 해서 해봄.. 빠른거 같기도하고...)
+    // 500 라인 씩 받아서 union 사용하여 한번에 insert 방식 (더 빠르다고 해서 해봄.. 빠른거 같기도하고...똑같은거 같기도..)
     private StringBuilder sql = null;
-    public void insertToTable2 (SQLiteDatabase db, String str, int total, int cur) {
-        String [] splitTmp = str.split("\\|");
-        if (cur == 1) {
-            sql = new StringBuilder();
-            sql.append("INSERT INTO " + DBHelper.TABLE_NAME +
-                                    " (code, name, branch_name, tel, fax, zip, addr) ");
-        }
+    public void insertToTable2 (SQLiteDatabase db, String str, int cur, boolean isLast) {
+        if (isLast == false) {
+            String [] splitTmp = str.split("\\|");
+            if (cur == 1) {
+                sql = new StringBuilder();
+                sql.append("INSERT INTO " + DBHelper.TABLE_NAME +
+                                        " (code, name, branch_name, tel, fax, zip, addr) ");
+            }
 
-        if (cur%500 == 0) {
-            db.execSQL (sql.toString().replaceFirst("UNION ", ""));
+
+            if (cur % 500 == 0) {
+                db.execSQL(sql.toString().replaceFirst("UNION ", ""));
+                sql.setLength(0);
+                sql.append("INSERT INTO " + DBHelper.TABLE_NAME +
+                        " (code, name, branch_name, tel, fax, zip, addr) ");
+            }
+
+            StringBuilder strTmp = new StringBuilder();
+            for (String tmp : splitTmp) {
+                strTmp.append(" '").append(tmp).append("',");
+            }
+            strTmp = new StringBuilder(strTmp.substring(0, strTmp.length() - 1));
+            sql.append("UNION SELECT ").append(strTmp);
+        } else
+        {
+            db.execSQL(sql.toString().replaceFirst("UNION ", ""));
             sql.setLength(0);
             sql.append("INSERT INTO " + DBHelper.TABLE_NAME +
                     " (code, name, branch_name, tel, fax, zip, addr) ");
         }
-
-        String strTmp = "";
-        for (String tmp:splitTmp) {
-            strTmp += " '" + tmp + "',";
-        }
-        strTmp = strTmp.substring(0, strTmp.length()-1);
-        sql.append("UNION SELECT " + strTmp);
     }
 
 

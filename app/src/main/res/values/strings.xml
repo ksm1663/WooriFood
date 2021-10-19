@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">WooriFood</string>
     <string name="code_file">codefilex</string>
+
+    <string-array name="domains">
+        <item>"@wooribank.com"</item>
+        <item>"@woorifg.com"</item>
+        <item>"@wooricard.com"</item>
+        <item>"@woorifcapital.com"</item>
+        <item>"@wooriib.com"</item>
+        <item>"@woorifis.com"</item>
+
+    </string-array>
 </resources>

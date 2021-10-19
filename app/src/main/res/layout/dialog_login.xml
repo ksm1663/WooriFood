@@ -1,53 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    tools:context=".LoginDialog">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#00FFFFFF"
+    android:orientation="vertical"
+    android:padding="10dp"
+
+    android:id="@+id/layer_main">
 
     <LinearLayout
+        android:id="@+id/test"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@drawable/login_radius"
-        android:layout_width="300dp"
-        android:layout_height="100dp"
+        android:padding="10dp"
         android:orientation="vertical">
+
+<!-- 아이디 아이콘, 아이디 입력창, 도메인 스피 레이어 -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
-                <TextView
+            <ImageView
+                app:srcCompat="@drawable/login_person"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:gravity="center" />
 
-                    android:layout_width="90dp"
-                    android:layout_height="45dp"
-                    android:layout_marginStart="16dp"
-                    android:text="행번"
-                    android:textSize="20sp"
-                    android:gravity="center"/>
+            <EditText
+                android:id="@+id/text_id"
+                android:layout_width="110dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="8dp"
+                android:hint="아이디" />
 
-            </LinearLayout>
-            <LinearLayout android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <EditText android:id="@+id/text_id"
-                    android:layout_width="150dp"
-                    android:layout_height="45dp"
-                    android:layout_marginStart="8dp"
-                    android:hint="행번을 입력하세요"/>
-            </LinearLayout>
+            <Spinner
+                android:id="@+id/spin_domain"
+                android:layout_width="220dp"
+                android:layout_height="45dp" />
 
         </LinearLayout>
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:text="로그인!">
-        </Button>
+
+        <!-- 비밀번호 아이콘, 비밀번호 입력창 레이어 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                app:srcCompat="@drawable/login_password"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:gravity="center" />
+
+            <EditText
+                android:id="@+id/text_pw"
+                android:layout_width="330dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="8dp"
+                android:inputType="numberPassword"
+                android:hint="비밀번호 (6자 이상)" />
+        </LinearLayout>
+
+<!-- 신규등록 누르면 뜨는 레이어 (입력 정보) -->
+        <LinearLayout
+            android:id="@+id/layer_branch"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                app:srcCompat="@drawable/join_info"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:gravity="center" />
+
+            <EditText
+                android:id="@+id/text_branch"
+                android:layout_width="330dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="8dp"
+                android:hint="소속지점" />
+        </LinearLayout>
+
+<!-- 조인 버튼 레이어 -->
+        <LinearLayout
+            android:id="@+id/layer_realJoin"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:gravity="center">
+            <Button
+                android:id="@+id/btn_back"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="20dp"
+                android:text="이전으로"/>
+            <Button
+                android:id="@+id/btn_realJoin"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:text="!!등록!!"/>
+        </LinearLayout>
+
+<!-- 로그인, 신규등록 버튼 레이어 -->
+        <LinearLayout
+            android:id="@+id/layer_loginJoin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:gravity="center">
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="20dp"
+                android:text="로그인!"/>
+            <Button
+                android:id="@+id/btn_join"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:text="신규등록"/>
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
