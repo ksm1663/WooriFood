@@ -16,7 +16,7 @@ import android.util.Log;
 public class DBHelper extends SQLiteOpenHelper {
 
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "CODE.DB";
     public static final String TABLE_NAME = "TB_CODE";
     private static boolean isTableCreate = false;
