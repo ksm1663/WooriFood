@@ -15,14 +15,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+            <ImageButton
+                android:id="@+id/btn_search_back"
+                android:background="@drawable/sel_btn_back"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center_vertical"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
             <EditText
                 android:id="@+id/edit_search"
-                android:layout_width="310dp"
-                android:layout_height="wrap_content"/>
-            <ImageView
-                app:srcCompat="@drawable/search_search"
-                android:layout_width="45dp"
-                android:layout_height="45dp" />
+                android:layout_width="290dp"
+                android:layout_height="wrap_content"
+                android:hint="지점 검색"/>
+            <ImageButton
+                android:id="@+id/btn_cancel"
+                android:background="@drawable/sel_btn_cancel"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center_vertical"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
         </LinearLayout>
 
         <ListView

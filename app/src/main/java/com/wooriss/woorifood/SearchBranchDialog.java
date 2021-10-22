@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 /*
  - 작성일 : 2021.10.19
  - 작성자 : 김성미
- - 기능 : 지점명 검색하는 뷰
+ - 기능 : 지점명 검색하는 다이얼로그
  - 비고 :
  - 수정이력 :
 */
@@ -33,14 +34,24 @@ public class SearchBranchDialog  extends Dialog {
 
     private ListView listView;
     private EditText editSearch;
+    private ImageButton btnCancel;
+    private ImageButton btnBack;
 
     private ArrayAdapter<String> listAdapter;
     private ArrayList<Branch> branchList;
     private ArrayList<String> branchNameList;
     private ArrayList<String> tmpList;
 
-    public SearchBranchDialog(@NonNull Context context) {
+
+    public interface ICustomDialogEventListener {
+        public void customDialogEvent(String s1, String s2);
+    }
+    private ICustomDialogEventListener onCustomDialogEventListener;
+
+    // In the constructor, you set the callback
+    public SearchBranchDialog(@NonNull Context context, ICustomDialogEventListener onCustomDialogEventListener) {
         super(context);
+        this.onCustomDialogEventListener = onCustomDialogEventListener;
         this.context = context;
 
         setCanceledOnTouchOutside(false);
@@ -60,6 +71,8 @@ public class SearchBranchDialog  extends Dialog {
 
         addListenerToEditSearch();
         addListenerToListItem();
+        addListenerToCancelBtn();
+        addListenerToBackBtn();
 
         Cursor cursor = viewData();
 
@@ -83,8 +96,8 @@ public class SearchBranchDialog  extends Dialog {
 
     }
 
+    // 쿼리 요청 후 반환 : 우리은행 지점만 찾아옴
     private Cursor viewData () {
-        Log.d("plz", "11111");
         SQLiteDatabase db = new DBHelper(context).getReadableDatabase();
         String query = "Select * from " + DBHelper.TABLE_NAME + " where name like \"우리%\"" + " and (code like \"020%\" or code like \"20%\")";
         return db.rawQuery(query, null);
@@ -94,6 +107,8 @@ public class SearchBranchDialog  extends Dialog {
 
         listView = findViewById(R.id.list_branch);
         editSearch = findViewById(R.id.edit_search);
+        btnCancel = findViewById(R.id.btn_cancel);
+        btnBack = findViewById(R.id.btn_search_back);
 
         branchList = new ArrayList<>(); // <Branch>
         branchNameList = new ArrayList<>(); // <String>
@@ -129,12 +144,36 @@ public class SearchBranchDialog  extends Dialog {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                editSearch.setText(tmpList.get(i));
-//                Log.d("plz : ", i + " / " + adapterView.getSelectedItemPosition());
+                // 정규식으로 공백 제거
+                String selBranchName = adapterView.getItemAtPosition(i).toString().replaceAll("\\s","");
+                //editSearch.setText(adapterView.getItemAtPosition(i).toString().replaceAll("\\s",""));
+                closeDialog(selBranchName);
             }
         });
     }
 
+    // 취소버튼 누르면 검색텍스트창 클리어
+    private void addListenerToCancelBtn () {
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editSearch.setText("");
+            }
+        });
+    }
+
+    // 뒤로버튼 누르면 검색 다이얼로그 닫기 (전달 값 없음)
+    private void addListenerToBackBtn() {
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeDialog("");
+            }
+        });
+
+    }
+
+    // 검색어 입력할 때마다 리스트뷰 검색해서 해당되는 리스트로 갱신
     private void searchBranch(String str) {
         // 문자 입력시마다 리스트를 지우고 새로 뿌려준다.
         branchNameList.clear();
@@ -157,5 +196,12 @@ public class SearchBranchDialog  extends Dialog {
         // 리스트 데이터가 변경되었으므로 아답터를 갱신하여 검색된 데이터를 화면에 보여준다.
         listAdapter.notifyDataSetChanged();
     }
+
+    private void closeDialog(String s) {
+        onCustomDialogEventListener.customDialogEvent(s, s);
+        dismiss();
+    }
+
+
 
 }

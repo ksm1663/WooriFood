@@ -8,6 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="loadingBack">#FF4367A4</color>
+    <color name="transparent">#00000000</color>
+    <color name="cancel_unclick">#FFB1B1B1</color>
+    <color name="cancel_clicked">#FF8D8D8D</color>
 </resources>
 
 

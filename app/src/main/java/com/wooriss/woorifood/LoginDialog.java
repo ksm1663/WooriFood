@@ -285,15 +285,35 @@ public class LoginDialog extends Dialog{
 
     // 브랜치 텍스트 박스 눌렀을 때 이벤트 정의
     private void addListenerToBranchEdit() {
+        editBranch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("plz", "뭐지뭐지");
+                new SearchBranchDialog(context, new SearchBranchDialog.ICustomDialogEventListener() {
+                    @Override
+                    public void customDialogEvent(String test1, String test2) {
+                        // Do something with the value here, e.g. set a variable in the calling activity
+                        editBranch.setText(test1);
+                    }
+                });
+            }
+        });
+        /*
         editBranch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
                     Log.d("plz", "뭐지뭐지");
-                    new SearchBranchDialog(context);
+                    new SearchBranchDialog(context, new SearchBranchDialog.ICustomDialogEventListener() {
+                        @Override
+                        public void customDialogEvent(String test1, String test2) {
+                            // Do something with the value here, e.g. set a variable in the calling activity
+                            editBranch.setText(test1);
+                        }
+                    });
                 }
             }
-        });
+        });*/
     }
 
     private void showMainActivity (FirebaseUser user) {
