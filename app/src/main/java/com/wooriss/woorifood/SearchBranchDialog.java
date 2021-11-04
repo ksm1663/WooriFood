@@ -6,18 +6,21 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 
 /*
@@ -37,14 +40,14 @@ public class SearchBranchDialog  extends Dialog {
     private ImageButton btnCancel;
     private ImageButton btnBack;
 
-    private ArrayAdapter<String> listAdapter;
-    private ArrayList<Branch> branchList;
-    private ArrayList<String> branchNameList;
-    private ArrayList<String> tmpList;
+    private ArrayList<HashMap<String, String>> branchList;
+    private ArrayList<HashMap<String, String>> backUpList;
+    private SimpleAdapter listAdapter;
 
+    private SQLiteDatabase db;
 
     public interface ICustomDialogEventListener {
-        public void customDialogEvent(String s1, String s2);
+        void customDialogEvent(HashMap<String, String> branch_info);
     }
     private ICustomDialogEventListener onCustomDialogEventListener;
 
@@ -76,29 +79,34 @@ public class SearchBranchDialog  extends Dialog {
 
         Cursor cursor = viewData();
 
+        // SELECT 결과값 리스트에 저장
+        while (cursor.moveToNext()) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("code", cursor.getString(0));
+            map.put("branch_name", cursor.getString(2).replaceAll("\\s",""));
+            map.put("zip", cursor.getString(5));
+            map.put("addr", cursor.getString(6));
+            branchList.add(map);
+        }
+
         // 리스트뷰에 지점명어댑터 연결
-        listAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, branchNameList);
+        listAdapter = new SimpleAdapter(context,
+                branchList,
+                android.R.layout.simple_list_item_1,
+                new String[]{"branch_name"},
+                new int[]{android.R.id.text1});
+
         listView.setAdapter(listAdapter);
 
-        // SELECT 결과값 리스트에 저장
-        if (cursor!=null && cursor.moveToFirst()) {
-            do {
-                Branch b = new Branch(cursor.getString(0), cursor.getString(2), cursor.getString(6));
-                branchList.add(b);
-                branchNameList.add(b.getName());
-            }while (cursor.moveToNext());
-        }
-        
+
         Log.d("plz", "저장된 지점 수 : " + branchList.size());
-
         // 검색기능에 필요한 리스트 원본 복사본
-        tmpList.addAll(branchNameList);
-
+        backUpList.addAll(branchList);
     }
 
     // 쿼리 요청 후 반환 : 우리은행 지점만 찾아옴
     private Cursor viewData () {
-        SQLiteDatabase db = new DBHelper(context).getReadableDatabase();
+        db = new DBHelper(context).getReadableDatabase();
         String query = "Select * from " + DBHelper.TABLE_NAME + " where name like \"우리%\"" + " and (code like \"020%\" or code like \"20%\")";
         return db.rawQuery(query, null);
     }
@@ -107,32 +115,29 @@ public class SearchBranchDialog  extends Dialog {
 
         listView = findViewById(R.id.list_branch);
         editSearch = findViewById(R.id.edit_search);
+        // SPAN_EXCLUSIVE_EXCLUSIVE spans cannot have a zero length 땜에 넣었는데 안없어지넹 (삼성키보드-안드로이드 버그)
+        editSearch.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         btnCancel = findViewById(R.id.btn_cancel);
         btnBack = findViewById(R.id.btn_search_back);
 
-        branchList = new ArrayList<>(); // <Branch>
-        branchNameList = new ArrayList<>(); // <String>
-        tmpList = new ArrayList<>(); // <String>
+        branchList = new ArrayList<>(); // HashMap<String, String>
+        backUpList = new ArrayList<>(); // <String>
+
     }
 
     // 검색창에 문자 입력될 때마다 검색 수행 후 리스트뷰 갱신
     private void addListenerToEditSearch() {
         editSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 // input창에 문자를 입력할때마다 호출된다.
                 // search 메소드를 호출한다.
-
                 String text = editSearch.getText().toString();
                 searchBranch(text);
             }
@@ -145,9 +150,12 @@ public class SearchBranchDialog  extends Dialog {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 // 정규식으로 공백 제거
-                String selBranchName = adapterView.getItemAtPosition(i).toString().replaceAll("\\s","");
-                //editSearch.setText(adapterView.getItemAtPosition(i).toString().replaceAll("\\s",""));
-                closeDialog(selBranchName);
+                Log.d("plz", "/ i : " + i + " / l : " + l);
+                HashMap<String, String> hm = (HashMap<String, String>) adapterView.getItemAtPosition(i);
+                String selBranchName = hm.get("branch_name");
+                editSearch.setText(selBranchName);
+//                editSearch.setText(adapterView.getItemAtPosition(i).toString().replaceAll("\\s",""));
+                closeDialog(hm);
             }
         });
     }
@@ -167,7 +175,7 @@ public class SearchBranchDialog  extends Dialog {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeDialog("");
+                closeDialog(null);
             }
         });
 
@@ -175,21 +183,23 @@ public class SearchBranchDialog  extends Dialog {
 
     // 검색어 입력할 때마다 리스트뷰 검색해서 해당되는 리스트로 갱신
     private void searchBranch(String str) {
+
+
         // 문자 입력시마다 리스트를 지우고 새로 뿌려준다.
-        branchNameList.clear();
+        branchList.clear();
 
         // 문자 입력이 없을때는 모든 데이터를 보여준다.
         if (str.length() == 0) {
-            branchNameList.addAll(tmpList);
+            branchList.addAll(backUpList);
         }
         // 문자 입력을 할때..
         else {
             // 리스트의 모든 데이터를 검색한다.
-            for (int i = 0; i < tmpList.size(); i++) {
+            for (int i = 0; i < backUpList.size(); i++) {
                 // arraylist의 모든 데이터에 입력받은 단어(charText)가 포함되어 있으면 true를 반환한다.
-                if (tmpList.get(i).toLowerCase().contains(str)) {
+                if (Objects.requireNonNull(backUpList.get(i).get("branch_name")).toLowerCase().contains(str)) {
                     // 검색된 데이터를 리스트에 추가한다.
-                    branchNameList.add(tmpList.get(i));
+                    branchList.add(backUpList.get(i));
                 }
             }
         }
@@ -197,8 +207,9 @@ public class SearchBranchDialog  extends Dialog {
         listAdapter.notifyDataSetChanged();
     }
 
-    private void closeDialog(String s) {
-        onCustomDialogEventListener.customDialogEvent(s, s);
+    private void closeDialog(HashMap<String,String> branch_info) {
+        onCustomDialogEventListener.customDialogEvent(branch_info);
+        db.close();
         dismiss();
     }
 

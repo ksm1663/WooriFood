@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide;
 import com.dinuscxj.progressbar.CircleProgressBar;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.HashMap;
+
 
 /*
  - 작성일 : 2021.10.03
@@ -27,6 +29,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoadingActivity extends AppCompatActivity {
     private CircleProgressBar progressBar;
     private FirebaseUser u;
+
+    private HashMap<String, String> branch_info;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -69,6 +73,7 @@ public class LoadingActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("USER_INFO", u);
+        intent.putExtra("BRANCH_INFO", branch_info);
         startActivity(intent);
     }
 
@@ -96,6 +101,10 @@ public class LoadingActivity extends AppCompatActivity {
 
     public void setUser (FirebaseUser u) {
         this.u = u;
+    }
+
+    public void setBranchInfo (HashMap<String, String> _branch_info) {
+        this.branch_info = _branch_info;
     }
 
 }

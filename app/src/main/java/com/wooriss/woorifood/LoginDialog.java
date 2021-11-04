@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.auth.AuthResult;
@@ -32,6 +33,7 @@ import androidx.transition.Transition;
 import androidx.transition.TransitionManager;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 /*
  - 작성일 : 2021.10.12
@@ -62,6 +64,8 @@ public class LoginDialog extends Dialog{
 
     private FirebaseAuth mAuth ; // 인증기능을 가지고 있는 객
     private FirebaseDatabase mDatabase;
+
+    private HashMap<String, String> branch_info;
 
 
     public LoginDialog(@NonNull Context context) {
@@ -156,7 +160,7 @@ public class LoginDialog extends Dialog{
                                 if (task.isSuccessful()) {   // 로그인 성공
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     Toast.makeText((Activity) context, "!!반갑습니다!!", Toast.LENGTH_SHORT).show();
-                                    showMainActivity(user);
+                                    showMainActivity(user, null);
 
                                 } else {                    // 로그인 실패
                                     // If sign in fails, display a message to the user.
@@ -233,11 +237,16 @@ public class LoginDialog extends Dialog{
                                     // 계정 정보 DB에 저장
                                     String uid = user.getUid();
                                     User u = new User(uid, mail, branch);
-                                    mDatabase.getReference().child("users").child(uid).setValue(u);
+                                    mDatabase.getReference().child("users").child(uid).setValue(u).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Log.d("plz", "계정 생성 성공!");
+                                            Toast.makeText(context, "생성 완료! 반갑습니다!!", Toast.LENGTH_SHORT).show();
+                                            showMainActivity (user, branch_info);
+                                        }
+                                    });
 
-                                    Log.d("plz", "계정 생성 성공!");
-                                    Toast.makeText(context, "생성 완료! 반갑습니다!!", Toast.LENGTH_SHORT).show();
-                                    showMainActivity (user);
+
 
                                 } else {                        // 계정 생성 실패
                                     // If sign in fails, display a message to the user.
@@ -250,9 +259,6 @@ public class LoginDialog extends Dialog{
                                         Toast.makeText(context, "이미 존재하는 회원입니다!!", Toast.LENGTH_SHORT).show();
                                     else
                                         Toast.makeText(context, "신규등록 실패! 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-
-                                    //showMainActivity (null);
-                                    //updateUI(null);
                                 }
                             }
                         });
@@ -291,34 +297,22 @@ public class LoginDialog extends Dialog{
                 Log.d("plz", "뭐지뭐지");
                 new SearchBranchDialog(context, new SearchBranchDialog.ICustomDialogEventListener() {
                     @Override
-                    public void customDialogEvent(String test1, String test2) {
+                    public void customDialogEvent(HashMap<String, String> _branch_info) {
                         // Do something with the value here, e.g. set a variable in the calling activity
-                        editBranch.setText(test1);
+                        if (_branch_info != null) {
+                            branch_info = _branch_info;
+                            editBranch.setText(_branch_info.get("branch_name"));
+                        }
                     }
                 });
             }
         });
-        /*
-        editBranch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    Log.d("plz", "뭐지뭐지");
-                    new SearchBranchDialog(context, new SearchBranchDialog.ICustomDialogEventListener() {
-                        @Override
-                        public void customDialogEvent(String test1, String test2) {
-                            // Do something with the value here, e.g. set a variable in the calling activity
-                            editBranch.setText(test1);
-                        }
-                    });
-                }
-            }
-        });*/
     }
 
-    private void showMainActivity (FirebaseUser user) {
+    private void showMainActivity (FirebaseUser user, HashMap<String, String> _branch_info) {
 
         ((LoadingActivity)context).setUser(user);
+        ((LoadingActivity)context).setBranchInfo(_branch_info);
 
         ((LoadingActivity) context).finish(); // 로딩화면종료
 

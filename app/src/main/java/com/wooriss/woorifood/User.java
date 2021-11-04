@@ -5,7 +5,7 @@ import android.os.Parcelable;
 /*
  - 작성일 : 2021.10.19
  - 작성자 : 김성미
- - 기능 : 사용자 정보
+ - 기능 : 사용자 정보 클래스
  - 비고 :
  - 수정이력 :
 */
@@ -30,7 +30,6 @@ public class User  {
         return userId;
     }
 
-    public String getBranch() {
-        return branch;
+    public String getBranch() { return branch;
     }
 }

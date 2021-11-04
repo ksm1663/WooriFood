@@ -54,6 +54,9 @@ dependencies {
     // RxJava 관련
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.15'
+
+    // 카카오 API 응용 위한 Rtrofit 관련
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
 }
-
-
