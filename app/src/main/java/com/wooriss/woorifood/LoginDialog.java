@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
@@ -277,7 +278,12 @@ public class LoginDialog extends Dialog{
                                         Toast.makeText(context, "신규등록 실패! 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        });
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("plz", "계정 생성 실패! : " + e.getMessage());
+                    }
+                });
             }
         });
     }
