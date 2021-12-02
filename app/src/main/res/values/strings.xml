@@ -9,6 +9,15 @@
         <item>"@woorifcapital.com"</item>
         <item>"@wooriib.com"</item>
         <item>"@woorifis.com"</item>
-
     </string-array>
+
+    <string-array name="positions">
+        <item>"행원"</item>
+        <item>"책임자"</item>
+        <item>"관리자"</item>
+        <item>"임원"</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

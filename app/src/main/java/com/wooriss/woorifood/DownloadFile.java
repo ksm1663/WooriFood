@@ -44,7 +44,7 @@ public  class DownloadFile extends AsyncTask<String, Integer, Long> {
     // 로딩 중 이미지를 띄워놓거나, 스레드 작업 이전에 수행할 동작 구현
     @Override
     protected void onPreExecute() {
-        Log.d("plz", getClass().getName() + " : 1111");
+//        Log.d("plz", getClass().getName() + " : 1111");
     }
 
     // doInBackground() : 새로 만든 쓰레드에서 백그라운드 작업 수행. execute() 메소드를 호출할 때 사용된 파라미터 전달 받음

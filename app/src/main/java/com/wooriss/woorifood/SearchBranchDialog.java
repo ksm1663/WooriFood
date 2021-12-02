@@ -79,13 +79,18 @@ public class SearchBranchDialog  extends Dialog {
 
         Cursor cursor = viewData();
 
+        Log.d("plz", "cursor Size : "+ cursor.getCount());
         // SELECT 결과값 리스트에 저장
+        // String code = c.getString(c.getColumnIndexOrThrow("code")).replaceAll("(^\\p{Z}+|\\p{Z}+$)", "");
+
+
         while (cursor.moveToNext()) {
             HashMap<String, String> map = new HashMap<>();
-            map.put("code", cursor.getString(0));
-            map.put("branch_name", cursor.getString(2).replaceAll("\\s",""));
-            map.put("zip", cursor.getString(5));
-            map.put("addr", cursor.getString(6));
+            String branch_name = cursor.getString(2).replaceAll("(^\\p{Z}+|\\p{Z}+$)", "");
+            String branch_addr = cursor.getString(6).replaceAll("(^\\p{Z}+|\\p{Z}+$)", "");
+
+            map.put("branch_name", branch_name);
+            map.put("branch_addr", branch_addr);
             branchList.add(map);
         }
 
@@ -117,6 +122,7 @@ public class SearchBranchDialog  extends Dialog {
         editSearch = findViewById(R.id.edit_search);
         // SPAN_EXCLUSIVE_EXCLUSIVE spans cannot have a zero length 땜에 넣었는데 안없어지넹 (삼성키보드-안드로이드 버그)
         editSearch.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        editSearch.setInputType(InputType.TYPE_NULL);
         btnCancel = findViewById(R.id.btn_cancel);
         btnBack = findViewById(R.id.btn_search_back);
 
@@ -149,8 +155,7 @@ public class SearchBranchDialog  extends Dialog {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // 정규식으로 공백 제거
-                Log.d("plz", "/ i : " + i + " / l : " + l);
+//                Log.d("plz", "/ i : " + i + " / l : " + l);
                 HashMap<String, String> hm = (HashMap<String, String>) adapterView.getItemAtPosition(i);
                 String selBranchName = hm.get("branch_name");
                 editSearch.setText(selBranchName);
@@ -183,8 +188,6 @@ public class SearchBranchDialog  extends Dialog {
 
     // 검색어 입력할 때마다 리스트뷰 검색해서 해당되는 리스트로 갱신
     private void searchBranch(String str) {
-
-
         // 문자 입력시마다 리스트를 지우고 새로 뿌려준다.
         branchList.clear();
 

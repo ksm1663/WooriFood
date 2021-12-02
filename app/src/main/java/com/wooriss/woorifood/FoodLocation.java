@@ -1,23 +1,8 @@
 package com.wooriss.woorifood;
 
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.gson.JsonObject;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,88 +27,108 @@ radius              : 중심 좌표부터의 반경거리. 특정 지역을 중�
 page                : 결과 페이지 번호, 1-45 사이, 기본 값 1
 size                : 한 페이지에 보여질 문서의 개수, 1~15 사이, 기본 값 15
 sort                : 결과 정렬 순서, distance 정렬을 원할 때는 기준 좌표로 쓰일 x, y와 함께 사용, distance 또는 accuracy, 기본 accuracy
-
 * */
 
 public class FoodLocation {
-
-
-    //////////////////////////////////////////////////////////////////////////////////////
     private static final String BASE_URL= "https://dapi.kakao.com/"; // HOST
     private static Retrofit retrofit;
     private static final String API_KEY_KAKAO = "KakaoAK 7aea75b45c61b6eeb0df2f3762c857a1"; //카카오 개발자 사이트에서 발급 받은 키를 REST API 키
+    private static final int NEAR_KILOMETER = 4000; // 인근 4KM 이내 식당 검색
+    private static final int MAX_LIST_SIZE = 15; // 한 페이지에 보여질 문서 수
 //    private static final String QUERY_KAKAO = "김밥천국";
 
 
-    private String x;
-    private String y;
+    public static String x;
+    public static String y;
     private Context context;
 
-    private String searchKey;
+    private static String searchKey;
 
-    private MainFragment mainfFragment;
+    private SearchFragment searchfFragment;
+    private  MainListFragment mainListFragment;
 
+
+    private static int cur_paging = 1; // 페이징을 위한 현재 페이지 번호
 //    public FoodLocation(Context _context, String addr, String _searchKey)  {
 //        context = _context;
 //        searchKey = _searchKey;
 //        getPosition (addr); // 비동기 방식이라 이 안에서 식당 검색을 위한 API 호출
 //    }
 
-    public FoodLocation(MainFragment _context, String addr, String _searchKey)  {
-        mainfFragment = _context;
-        searchKey = _searchKey;
-        getPosition (addr); // 비동기 방식이라 이 안에서 식당 검색을 위한 API 호출
+
+//    public FoodLocation(SearchFragment _context, String branchAddr) {
+//        searchfFragment = _context;
+//        getBranchPosition (branchAddr);
+//    }
+
+    public FoodLocation(MainListFragment _context, String branchAddr) {
+        mainListFragment = _context;
+        getBranchPosition (branchAddr);
     }
 
+    public void setSearchfFragment (SearchFragment searchfFragment) {
+        this.searchfFragment = searchfFragment;
+    }
 
-    // 넘어온 한글 주소로 x, y 좌표 확인
-    private void getPosition(String addr) {
-        Log.d("plz", "넘어온 주소 : " + addr);
+    public void getBranchPosition(String _branchAddr) {
+        Log.d("plz", "넘어온 주소(getBranchPosition) : " + _branchAddr);
         RetrofitService addrService = RetrofitFactory.create();
 
-        Call<JsonObject> addrCall = addrService.getAddress(API_KEY_KAKAO, addr, 1, 1);
+        Call<JsonObject> addrCall = addrService.getAddress(API_KEY_KAKAO, _branchAddr, 1, 1);
 
         addrCall.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                int firstFlag = 0;
+                if (x == null)
+                    firstFlag = 1;
                 JsonObject j = response.body().getAsJsonArray("documents").get(0).getAsJsonObject();
                 x = j.get("x").getAsString();
                 y = j.get("y").getAsString();
-                Log.d("plz", "x : " + x + "/ y : " + y);
-
-                getSikdangList();
+                Log.d("plz", "지점주소 불러오기 완료! x : " + x + "/ y : " + y);
+                if (firstFlag == 1)
+                    mainListFragment.callSetMainList();
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d("plz", "지점 주소 불러오기 실패 ");
             }
         });
     }
 
-
     // 구한 좌표로 검색된 식당 리스트 구하기
-    private void getSikdangList() {
+    public void getSikdangList(String _searchKey) {
+        searchKey = _searchKey;
+        cur_paging = 1;
+
         RetrofitService findSikdangService = RetrofitFactory.create();
         Call<PageListSikdang> sikdangCall = findSikdangService.getSikdangList(API_KEY_KAKAO, searchKey,
-                x, y, 5000, 1, "distance");
+                x, y, NEAR_KILOMETER, 1, "distance");
+        sikdangCall.enqueue(callback);
+    }
 
-        sikdangCall.enqueue(new Callback<PageListSikdang>() {
-            // 매개변수 call은 다음 페이지 호출 있을 때를 대비한 것. 반복 호출 시 해당 함수 바깥으로 빼면 더 깔끔하겠지!
-            @Override
-            public void onResponse(Call<PageListSikdang> call, Response<PageListSikdang> response) {
-                Log.d("plz", response + "");
-                Log.d("plz", "식당 결과 : " + response.body() + "");
-//                ((MainActivity)context).setSikdangList(response); // 메인으로 결과 보내서 리스트 세팅!
-                mainfFragment.setSikdangList(response); // 메인으로 결과 보내서 리스트 세팅!
+    // 리사이클뷰 페이징
+    public void callItemWithPaging(int total_cnt, int upAndDown) {
+        RetrofitService findSikdangService = RetrofitFactory.create();
+        Call<PageListSikdang> sikdangCall;
 
-                // MyAdapter adapter = new MyAdapter(response.body().articles);
-                // recyclerView.setAdapter(adapter)
+        if ((upAndDown == 0) && (cur_paging > 1)) { // 스르롤 위로 && 현재 페이지가 1보다 큰 경우
+//            sikdangCall = findSikdangService.getSikdangList(API_KEY_KAKAO, searchKey,
+//                    x, y, NEAR_KILOMETER, --cur_paging, "distance");
+//
+//            Log.d("plz", "스크롤 젤위! 앞 페이지 불러오기");
+//
+//            sikdangCall.enqueue(callback);
+        }else if (upAndDown == 1) { // 스르콜 아래로
+            // 47 / 15 => 3.xx => 3 => 마지막 페이지는 4 => 현재가 4페이지면 그만되어야
+            if (((total_cnt / MAX_LIST_SIZE) + 1) >= ++cur_paging) {
+                sikdangCall = findSikdangService.getSikdangList(API_KEY_KAKAO, searchKey,
+                        x, y, NEAR_KILOMETER, cur_paging, "distance");
+                Log.d("plz", "스크롤 제일 밑! 다음 페이지 불러오기");
+                sikdangCall.enqueue(callback);
             }
-
-            @Override
-            public void onFailure(Call<PageListSikdang> call, Throwable t) {
-            }
-        });
+        }
     }
 
 
@@ -132,15 +137,19 @@ public class FoodLocation {
         @Override
         public void onResponse(Call<PageListSikdang> call, Response<PageListSikdang> response) {
             if (response.isSuccessful()) {
-                Log.d("plz", "들어왔다 성공 1111111");
-                Log.d("plz", response.body().getDocuments() + "");
-                // enqueue 는 비동기실행!
+                Log.d("plz", response + "");
+                Log.d("plz", "식당 결과 수: " + response.body().getMeta().total_count + "");
+                if (response.body().getMeta().total_count > 0)
+                    searchfFragment.setNullResult(false);
+
+                else
+                    searchfFragment.setNullResult(true);
+                searchfFragment.setSikdangList(response, cur_paging); // 메인으로 결과 보내서 리스트 세팅!
+
             }
         }
-
         @Override
         public void onFailure(Call<PageListSikdang> call, Throwable t) {
-
         }
     };
 

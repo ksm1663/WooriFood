@@ -28,7 +28,8 @@ import java.util.HashMap;
 
 public class LoadingActivity extends AppCompatActivity {
     private CircleProgressBar progressBar;
-    private FirebaseUser u;
+    private FirebaseUser f_user;
+    private User user;
 
     private HashMap<String, String> branch_info;
 
@@ -72,8 +73,12 @@ public class LoadingActivity extends AppCompatActivity {
         overridePendingTransition(0,0);
 
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("USER_INFO", u);
-        intent.putExtra("BRANCH_INFO", branch_info);
+        intent.putExtra("FUSER_INFO", f_user);
+        intent.putExtra("USER_INFO", user);
+//        intent.putExtra("BRANCH_INFO", branch_info);
+
+        Log.d("plz", "onPause : " + user.getBranch_addr());
+
         startActivity(intent);
     }
 
@@ -99,9 +104,13 @@ public class LoadingActivity extends AppCompatActivity {
         new LoginDialog(this);
     }
 
-    public void setUser (FirebaseUser u) {
-        this.u = u;
+    public void setUser(FirebaseUser fu, User u) {
+        this.f_user = fu;
+        this.user = u;
+
+        Log.d("plz", "setUser : " + user.getBranch_addr());
     }
+
 
     public void setBranchInfo (HashMap<String, String> _branch_info) {
         this.branch_info = _branch_info;

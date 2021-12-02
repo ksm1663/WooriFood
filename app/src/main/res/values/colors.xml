@@ -11,6 +11,17 @@
     <color name="transparent">#00000000</color>
     <color name="cancel_unclick">#FFB1B1B1</color>
     <color name="cancel_clicked">#FF8D8D8D</color>
+    <color name="unusal_fragment">#33000000</color>
+
+    <color name="deep_blue">#FF3F72AF</color>
+    <color name="dark_blue">#E6112D4E</color>
+    <color name="light_blue">#E6DBE2EF</color>
+
+
+
+
+
+    <color name="yello">#FFFFBB33</color>
 </resources>
 
 

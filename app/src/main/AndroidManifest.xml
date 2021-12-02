@@ -10,9 +10,16 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
+    <!-- 사진 업로드 및 촬영을 위한 퍼미션 추가 -->
+    <!--갤러리 권한-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <!--갤러리 권한-->
+    <uses-permission android:name="android.permission.CAMERA"/>
 
 
     <application
+        android:screenOrientation="portrait"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -32,6 +39,14 @@
         <activity
             android:name=".MainActivity" >
         </activity>
+
+        <!--카카오맵 활용을 위한 KEY 추가 -->
+<!--        <meta-data android:name="com.kakao.sdk.AppKey" android:value="b0ea98234e3ea0dd993d5c3b869f3a72"/>-->
+
+<!--        네이버맵 활용을 위한 KEY 추가-->
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="pqe8e8b2e4" />
 
 
     </application>

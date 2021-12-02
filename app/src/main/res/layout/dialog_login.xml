@@ -6,7 +6,6 @@
     android:background="#00FFFFFF"
     android:orientation="vertical"
     android:padding="10dp"
-
     android:id="@+id/layer_main">
 
     <LinearLayout
@@ -63,10 +62,15 @@
                 android:hint="비밀번호 (6자 이상)" />
         </LinearLayout>
 
-<!-- 신규등록 누르면 뜨는 레이어 (입력 정보) -->
+
+    <LinearLayout
+        android:id="@+id/layer_realJoin"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+<!-- 신규등록 누르면 뜨는 레이어 (지점 정보) -->
         <LinearLayout
-            android:id="@+id/layer_branch"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -84,10 +88,46 @@
                 android:hint="소속지점" />
         </LinearLayout>
 
+        <!-- 신규등록 누르면 뜨는 레이어 (이름 정보) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                app:srcCompat="@drawable/join_info"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:gravity="center" />
+
+            <EditText
+                android:id="@+id/text_username"
+                android:layout_width="330dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="8dp"
+                android:hint="이름" />
+        </LinearLayout>
+        <!-- 신규등록 누르면 뜨는 레이어 (직급 정보) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                app:srcCompat="@drawable/login_person"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:gravity="center" />
+
+            <Spinner
+                android:id="@+id/spin_position"
+                android:layout_width="150dp"
+                android:layout_height="45dp" />
+
+
+    </LinearLayout>
+
 <!-- 조인 버튼 레이어 -->
         <LinearLayout
-            android:id="@+id/layer_realJoin"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -106,6 +146,7 @@
                 android:layout_marginLeft="20dp"
                 android:text="!!등록!!"/>
         </LinearLayout>
+    </LinearLayout>
 
 <!-- 로그인, 신규등록 버튼 레이어 -->
         <LinearLayout
