@@ -30,6 +30,13 @@ android {
     }
 }
 
+
+allprojects {
+    repositories {
+        maven {url 'https://jitpack.io'}
+    }
+}
+
 dependencies {
 
     // Import the BoM for the Firebase platform
@@ -74,4 +81,8 @@ dependencies {
 
     // firestore Storage
     implementation 'com.google.firebase:firebase-storage'
+
+    //mpandroid 그래프
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
 }

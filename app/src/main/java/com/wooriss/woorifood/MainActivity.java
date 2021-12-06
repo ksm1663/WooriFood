@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements UpdateDataService
         });
     }
 
-
+/*
     private Task<Void> addRating(DocumentReference sikdangRef, float taste, Sikdang _sikdang) {
         // Create reference for new rating, for use inside the transaction
         DocumentReference ratingRef = sikdangRef.collection("reviews").document();
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements UpdateDataService
                 transaction.set(sikdangRef, sikdang);
 
                 // Update rating (taste)
-                Review review = new Review(f_user.getUid(),  taste);
+                Review review = new Review(f_user.getUid(), taste);
                 transaction.set(ratingRef, review, SetOptions.merge());
 
                 return null;
@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements UpdateDataService
     public void insertReview(Sikdang _sikdang) {
         addRating(fireStore.collection("sikdangs").document(_sikdang.getId()), 2, _sikdang);
     }
-
+*/
 
     @Override
     public void getReviewedSikdangs (String x, String y, int innerMeter) {

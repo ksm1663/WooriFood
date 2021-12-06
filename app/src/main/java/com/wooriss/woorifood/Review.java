@@ -7,13 +7,23 @@ import com.google.firebase.firestore.ServerTimestamp;
 public class Review {
     private String reviewerUid;
     private double taste;
+
+    private int price;
+    private int visit;
+    private int complex;
+
+    private String comment;
+
     @ServerTimestamp private Timestamp timestamp; // server timestamp
 
     public Review() {}
 
-    public Review(String reviewerUid, double taste) {
+    public Review(String reviewerUid, double taste, int price, int visit, int complex) {
         this.reviewerUid = reviewerUid;
         this.taste = taste;
+        this.price = price;
+        this.visit = visit;
+        this.complex = complex;
     }
 
     public double getTaste() {
@@ -28,4 +38,19 @@ public class Review {
         return timestamp;
     }
 
+    public int getComplex() {
+        return complex;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public int getVisit() {
+        return visit;
+    }
+
+    public String getComment() {
+        return comment;
+    }
 }

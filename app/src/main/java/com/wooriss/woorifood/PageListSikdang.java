@@ -33,6 +33,7 @@ class PlaceMeta{
     Boolean is_end;             // 현재 페이지가 마지막 페이지인지 여부, 값이 false면 page를 증가시켜 다음 페이지를 요청할 수 있음
     RegionInfo same_name;          // 질의어의 지역 및 키워드 분석 정보
 }
+
 class RegionInfo {
     List<String> region;     // 질의어에서 인식된 지역의 리스트, ex) '중앙로 맛집' 에서 중앙로에 해당하는 지역 리스트
     String keyword;  // 질의어에서 지역 정보를 제외한 키워드, ex) '중앙로 맛집' 에서 '맛집'
@@ -56,9 +57,17 @@ class Sikdang implements Serializable {
 
     // 리뷰 관련 항목들
     private double avgTaste;
+    private float avgPrice;
+    private float avgVisit;
+    private float avgFirstComplex;
+    private float avgSecondComplex;
+    private float avgThirdComplex;
+    private int numFirstComplex;
+    private int numSecondComplex;
+    private int numThirdComplex;
+
     private int numRatings;
     private int viewType;
-//    private List<Review> reviews;
 
 
 
@@ -140,13 +149,69 @@ class Sikdang implements Serializable {
         this.distance = distance;
     }
 
-//
-//    public List<Review> getReviews() {
-//        return reviews;
-//    }
-//    public void setReviews(List<Review> reviews) {
-//        this.reviews = reviews;
-//    }
+    public float getAvgPrice() {
+        return avgPrice;
+    }
+
+    public float getAvgVisit() {
+        return avgVisit;
+    }
+
+    public float getAvgFirstComplex() {
+        return avgFirstComplex;
+    }
+
+    public float getAvgSecondComplex() {
+        return avgSecondComplex;
+    }
+
+    public float getAvgThirdComplex() {
+        return avgThirdComplex;
+    }
+
+    public void setAvgPrice(float avgPrice) {
+        this.avgPrice = avgPrice;
+    }
+
+    public void setAvgVisit(float avgVisit) {
+        this.avgVisit = avgVisit;
+    }
+
+    public void setAvgFirstComplex(float avgFirstComplex) {
+        this.avgFirstComplex = avgFirstComplex;
+    }
+
+    public void setAvgSecondComplex(float avgSecondComplex) {
+        this.avgSecondComplex = avgSecondComplex;
+    }
+
+    public void setAvgThirdComplex(float avgThirdComplex) {
+        this.avgThirdComplex = avgThirdComplex;
+    }
+
+    public int getNumFirstComplex() {
+        return numFirstComplex;
+    }
+
+    public int getNumSecondComplex() {
+        return numSecondComplex;
+    }
+
+    public int getNumThirdComplex() {
+        return numThirdComplex;
+    }
+
+    public void setNumFirstComplex(int numFirstComplex) {
+        this.numFirstComplex = numFirstComplex;
+    }
+
+    public void setNumSecondComplex(int numSecondComplex) {
+        this.numSecondComplex = numSecondComplex;
+    }
+
+    public void setNumThirdComplex(int numThirdComplex) {
+        this.numThirdComplex = numThirdComplex;
+    }
 }
 
 

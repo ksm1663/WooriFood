@@ -1,16 +1,19 @@
 package com.wooriss.woorifood;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +24,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,11 +53,12 @@ import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailFragment extends Fragment {
+public class DetailFragment extends Fragment implements View.OnTouchListener{
 
     private Context context;
 
@@ -61,6 +75,13 @@ public class DetailFragment extends Fragment {
     private TextView sikdangCategoryGroupText;
     private TextView sikdangPhoneText;
     private RatingBar sikdangTasteAvgRating;
+
+    private SeekBar sikdangPriceAvgSeek;
+    private SeekBar sikdangFirstComplexSeek;
+    private SeekBar sikdangSecondComplexSeek;
+    private SeekBar sikdangThirdComplexSeek;
+
+    private BarChart sikdangComplexChart;
 
     private RecyclerView reviewListInDetailView;
     private List<ReviewSet> reviewSetList;
@@ -81,6 +102,14 @@ public class DetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (container != null)
+            context = container.getContext();
+
         if (getArguments() != null) {
             f_user = getArguments().getParcelable("f_user");
             user = (User) getArguments().getSerializable("user");
@@ -88,12 +117,6 @@ public class DetailFragment extends Fragment {
 
             Log.d("plz", "상세정보 프래그먼트로 넘어온 sikdang : " + sikdang);
         }
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (container != null)
-            context = container.getContext();
 
         return inflater.inflate(R.layout.fragment_detail, container, false);
     }
@@ -104,9 +127,11 @@ public class DetailFragment extends Fragment {
 
         findViews(view);
 
-        setSikdangInfo();
-
         downloadReviews();
+
+        //setSikdangInfo();
+
+
 
     }
 
@@ -122,6 +147,14 @@ public class DetailFragment extends Fragment {
         sikdangPhoneText = v.findViewById(R.id.textSikdangPhone);
         sikdangTasteAvgRating = v.findViewById(R.id.ratingSikdangTasteAvg);
 
+        sikdangPriceAvgSeek = v.findViewById(R.id.seekPrice);
+        sikdangFirstComplexSeek = v.findViewById(R.id.seekFirstComplex);
+        sikdangSecondComplexSeek = v.findViewById(R.id.seekSecondComplex);
+        sikdangThirdComplexSeek = v.findViewById(R.id.seekThirdComplex);
+
+        sikdangComplexChart = v.findViewById(R.id.sikdangComplexChart);
+
+
         reviewListInDetailView = v.findViewById(R.id.reviewListInDetailView);
         reviewSetList = new ArrayList<>();
         reviewAdapter = new ReviewAdapter(reviewSetList);
@@ -136,6 +169,29 @@ public class DetailFragment extends Fragment {
 
     }
 
+
+    public class MyValueFormatter extends ValueFormatter {
+
+        private  float cutoff;
+        private  DecimalFormat format;
+        String strs[] = {"-","여유","보통","혼잡"};
+
+        public MyValueFormatter(float cutoff) {
+            this.cutoff = cutoff;
+            this.format = new DecimalFormat("###,###,###,##0");
+        }
+
+        @Override
+        public String getFormattedValue(float value) {
+            if (value < cutoff) {
+                return "-";
+            }
+//            Log.d("plz", "format.format(value) : " + format.format(value));
+            return strs[(Integer.parseInt(format.format(value))/10)];//format.format(value);
+        }
+    }
+
+    //
     private void setSikdangInfo() {
         sikdangNameText.setText(sikdang.getPlace_name());
         sikdangAddrText.setText(sikdang.getAddress_name());
@@ -143,6 +199,138 @@ public class DetailFragment extends Fragment {
         sikdangCategoryGroupText.setText(sikdang.getCategory_group_name());
         sikdangPhoneText.setText(sikdang.getPhone());
         sikdangTasteAvgRating.setRating((float) sikdang.getAvgTaste());
+
+        sikdangPriceAvgSeek.setProgress((int)(sikdang.getAvgPrice()*10));
+        sikdangFirstComplexSeek.setProgress((int)(sikdang.getAvgFirstComplex()*10));
+        sikdangSecondComplexSeek.setProgress((int)(sikdang.getAvgSecondComplex()*10));
+        sikdangThirdComplexSeek.setProgress((int)(sikdang.getAvgThirdComplex()*10));
+
+        sikdangPriceAvgSeek.setOnTouchListener(this);
+
+
+        List<BarEntry> barEntryList = new ArrayList<>();
+
+        barEntryList.add(new BarEntry(1f,0));
+        barEntryList.add(new BarEntry(1f,sikdang.getAvgFirstComplex()*10));
+        barEntryList.add(new BarEntry(2f,sikdang.getAvgSecondComplex()*10));
+        barEntryList.add(new BarEntry(3f,sikdang.getAvgThirdComplex()*10));
+        barEntryList.add(new BarEntry(3f,30));
+
+//        Log.d("plz", "sikdang.getAvgFirstComplex() : " + sikdang.getAvgFirstComplex());
+//        Log.d("plz", barEntryList.get(0).getY()+"");
+//        Log.d("plz", "sikdang.getAvgSecondComplex() : " + sikdang.getAvgSecondComplex());
+//        Log.d("plz", barEntryList.get(1).getY()+"");
+//        Log.d("plz", "sikdang.getAvgThirdComplex() : " + sikdang.getAvgThirdComplex());
+//        Log.d("plz", barEntryList.get(2).getY()+"");
+
+        BarDataSet barDataSet = new BarDataSet(barEntryList,"");
+//        barDataSet.setColor(R.color.yello);
+        barDataSet.setColors(Color.TRANSPARENT, Color.parseColor("#FF3F72AF"),
+                Color.parseColor("#FF3F72AF"), Color.parseColor("#FF3F72AF"), Color.TRANSPARENT);
+//        barDataSet.setBarBorderWidth(0.1f);
+//        barDataSet.setColors(ColorTemplate.PASTEL_COLORS);
+        BarData barData = new BarData(barDataSet);
+        barData.setBarWidth(0.4f);
+
+        sikdangComplexChart.notifyDataSetChanged();
+        sikdangComplexChart.invalidate();
+        barData.setDrawValues(true);
+
+        sikdangComplexChart.getDescription().setEnabled(false); // 차트 옆에 표기되는 desc
+        sikdangComplexChart.setMaxVisibleValueCount(5); // 최대 보이는 그래프 개수
+        sikdangComplexChart.setPinchZoom(false); // 두손가락으로 줌인, 줌아웃
+        sikdangComplexChart.setDrawBarShadow(false); // 그래프 그림자
+        sikdangComplexChart.setDrawGridBackground(true); // 격자구조
+//        sikdangComplexChart.setEnabled(false);
+        sikdangComplexChart.animateY(1000);
+        sikdangComplexChart.getLegend().setEnabled(false);
+        sikdangComplexChart.setTouchEnabled(false);
+
+        // 30 3 4
+//      sikdangComplexChart.getAxisLeft().setDrawZeroLine(true);
+        sikdangComplexChart.getAxisLeft().setLabelCount(4, false);
+        sikdangComplexChart.getAxisLeft().mAxisMaximum = 30;
+        sikdangComplexChart.getAxisLeft().setGranularity(0.1f); // 1 단위마다 선 그리기
+        sikdangComplexChart.getAxisLeft().setGranularityEnabled(true);
+
+        sikdangComplexChart.getAxisLeft().setDrawLabels(true);
+//        sikdangComplexChart.getAxisLeft().setSpaceBottom(100);
+//        sikdangComplexChart.getAxisLeft().setCenterAxisLabels(true);
+        sikdangComplexChart.getAxisLeft().setValueFormatter(new MyValueFormatter(0));
+
+
+
+//        int max = findMax
+//        sikdangComplexChart.getAxisLeft().setLabelCount(4, true);
+//        sikdangComplexChart.getAxisLeft().mAxisMinimum = 0;
+//        sikdangComplexChart.getAxisLeft().mAxisMaximum = 5; // 3 위치에 선 그리기 위해 4로 맥시멈 설정
+//        sikdangComplexChart.getAxisLeft().setValueFormatter(new ValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value) {
+//                return String.valueOf(value);
+////                return super.getFormattedValue(value);
+//            }
+//        });
+//        sikdangComplexChart.getAxisLeft().setGranularity(1); // 1 단위마다 선 그리기
+//        sikdangComplexChart.getAxisLeft().setGranularityEnabled(true);
+//        sikdangComplexChart.getAxisLeft().setEnabled(true);
+//        sikdangComplexChart.getAxisLeft().setDrawGridLines(true);
+//        sikdangComplexChart.getAxisLeft().setDrawAxisLine(true);
+//        sikdangComplexChart.getAxisLeft().setDrawLabels(true); // 값 적는거 허용안함 (1,2,3)
+//        sikdangComplexChart.getAxisLeft().setValueFormatter(new LargeValueFormatter());
+
+//        sikdangComplexChart.getAxisLeft().setValueFormatter(new ValueFormatter() {
+//            private String[] gubun = {"-", "여유", "보통", "혼집"};
+//            @Override
+//            public String getAxisLabel(float value, AxisBase axis) {
+//                Log.d("plz", "Yvalue : " + value);
+//                return gubun[Math.round(value)];
+//            }
+//        });
+
+//        sikdangComplexChart.getAxisLeft().setDrawGridLines(false); // 격자 라인
+//        sikdangComplexChart.getAxisLeft().setDrawAxisLine(false); // 축 그리기
+
+
+        sikdangComplexChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        sikdangComplexChart.getXAxis().setGranularity(1f); // 간격
+        sikdangComplexChart.getXAxis().setDrawGridLines(false); // 격자
+        sikdangComplexChart.getXAxis().setDrawAxisLine(true); // 축 그림
+        sikdangComplexChart.getXAxis().setDrawLabels(true); // 라벨
+
+        sikdangComplexChart.getXAxis().setValueFormatter(new ValueFormatter() {
+            private String[] gubun = {"1차", "2차", "3차", "", ""};
+            @Override
+            public String getAxisLabel(float value, AxisBase axis) {
+                return gubun[(int)value-1];
+            }
+        });
+
+        sikdangComplexChart.getAxisRight().setEnabled(false);
+
+
+        sikdangComplexChart.setFitBars(true);
+        sikdangComplexChart.setDrawGridBackground(false);
+
+        sikdangComplexChart.setData(barData);
+        sikdangComplexChart.animateY(1000);
+
+
+
+
+
+    }
+
+    private void cacluateMinMax(BarDataSet chart, BarChart sikdangComplexChart, int labelCount) {
+        float maxValue = chart.getYMax();
+        float minValue = chart.getYMin();
+
+        if ((maxValue - minValue) < labelCount) {
+            float diff = labelCount - (maxValue - minValue);
+            maxValue = maxValue + diff;
+            sikdangComplexChart.getAxisLeft().setAxisMaximum(maxValue);
+            sikdangComplexChart.getAxisLeft().setAxisMinimum(minValue);
+        }
     }
 
     private void addListenerToUploadLay() {
@@ -166,7 +354,11 @@ public class DetailFragment extends Fragment {
                     if (document.exists()) {
                         Log.d("plz", "DocumentSnapshot data: " + document.getData());
                         // 식당의 종합정보 세팅
-                        Sikdang sikdang = document.toObject(Sikdang.class);
+                        sikdang = document.toObject(Sikdang.class);
+                        setSikdangInfo();
+                        sikdangComplexChart.notifyDataSetChanged();
+                        sikdangComplexChart.invalidate();
+
                         Log.d("plz", "[" + sikdang.getPlace_name() + "] 의 평균 맛평점 : " + sikdang.getAvgTaste());
 
                         document.getReference().collection("reviews").orderBy("timestamp", Query.Direction.ASCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -175,7 +367,7 @@ public class DetailFragment extends Fragment {
                                 if (task.isSuccessful()) {
                                     // 식당의 리뷰들 가져오기
                                     for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Log.d("plz", document.getId() + " => " + document.getData());
+//                                        Log.d("plz", document.getId() + " => " + document.getData());
                                         Review review = document.toObject(Review.class);
 
                                         ReviewSet reviewSet = new ReviewSet();
@@ -273,6 +465,11 @@ public class DetailFragment extends Fragment {
                 //
             }
         });
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        return true;
     }
 
 

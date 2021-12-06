@@ -19,8 +19,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.RatingBar;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -54,7 +57,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarChangeListener {
+public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarChangeListener, RadioGroup.OnCheckedChangeListener {
 
     private Context context;
 
@@ -64,12 +67,26 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
 //
 //    private Button btnPicture;
     private Button btnUpload;
-    private ImageView btngetImage;
     private RatingBar ratingTaste;
+
+    private RadioGroup radioPrice;
+    private RadioGroup radioVisit;
+    private RadioGroup radioComplex;
+
+
+
+    private EditText editComment;
+
+
+    private ImageView btngetImage;
 
     private RecyclerView imageListView;
     private ArrayList<ReviewFragment.ImageViewItem> imageList;
     private ReviewFragment.ImageViewAdapter imageViewAdapter;
+
+    private int price = 0;
+    private int visit = 0;
+    private int complex = 0;
 
 //    private List<Uri> imageList;
 
@@ -136,7 +153,11 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
         addListenerToPictureBtn();
         addListenerToUploadBtn();
 
-        ratingTaste.setOnRatingBarChangeListener(this);
+        ratingTaste.setOnRatingBarChangeListener(this); // onRatingChanged
+
+        radioPrice.setOnCheckedChangeListener(this); //onCheckedChanged
+        radioVisit.setOnCheckedChangeListener(this);
+        radioComplex.setOnCheckedChangeListener(this);
 
         requestPermissions();
 //        chkCameraPermission();
@@ -156,6 +177,12 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
 //        btnPicture = v.findViewById(R.id.btn_picture);
         btnUpload = v.findViewById(R.id.btn_upload);
         ratingTaste = v.findViewById(R.id.ratingTaste);
+
+        radioPrice = v.findViewById(R.id.radioPrice);
+        radioVisit = v.findViewById(R.id.radioVisit);
+        radioComplex = v.findViewById(R.id.radioComplex);
+        editComment = v.findViewById(R.id.editComment);
+
 
         imageListView = v.findViewById(R.id.imageListView);
 
@@ -216,6 +243,54 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
         if (ratingBar == ratingTaste) {
             ratingTaste.setRating(v);
         }
+    }
+
+    // 라디오그룹 선택 변경 시
+    @Override
+    public void onCheckedChanged(RadioGroup radioGroup, int i) {
+
+        if (radioGroup == radioPrice) {
+            switch (i) {
+                case R.id.radioPriceCheap:
+                    price = Code.PriceType.CHEAP;
+                    break;
+                case R.id.radioPriceNormal:
+                    price = Code.PriceType.NORMAL;
+                    break;
+                case R.id.radioPriceExpensive:
+                    price = Code.PriceType.EXPENSIVE;
+                    break;
+            }
+        } else if (radioGroup == radioVisit) {
+            switch (i) {
+                case R.id.radioVisitFirst:
+                    visit = Code.VisitType.FIRST;
+                    break;
+                case R.id.radioVisitSecond:
+                    visit = Code.VisitType.SECOND;
+                    break;
+                case R.id.radioVisitThird:
+                    visit = Code.VisitType.THIRD;
+                    break;
+            }
+
+        } else if (radioGroup == radioComplex) {
+            switch (i) {
+                case R.id.radioComplexCozy:
+                    complex = Code.ComplexType.COZY;
+                    break;
+                case R.id.radioComplexNormal:
+                    complex = Code.ComplexType.NORMAL;
+                    break;
+                case R.id.radioComplexBuzy:
+                    complex = Code.ComplexType.BUZY;
+                    break;
+            }
+
+        } else {
+
+        }
+
     }
 
     // 갤러리 사진 선택 : 다중선택 지원
@@ -298,6 +373,13 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // 필수입력값 체크
+                if(!chkValueInput()) {
+                    Toast.makeText(context, "리뷰항목을 입력해주세요!", Toast.LENGTH_SHORT).show();
+                    Log.d("plz", "필수입력값 미 입력");
+                    return;
+                }
+
                 // 리뷰 문서명 구조 : 식당코드_yyyyMMddhhmmss_사용자uid
                 // 이미지는 리뷰문서명폴더 내 저장
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
@@ -330,16 +412,64 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
                         double oldTasteTotal = _sikdang.getAvgTaste() * _sikdang.getNumRatings();
                         double newAvgTaste = (oldTasteTotal + ratingTaste.getRating()) / newNumRatings;
 
+                        float oldPriceTotal = _sikdang.getAvgPrice() * _sikdang.getNumRatings();
+                        float newPriceTotal = (oldPriceTotal + price) / newNumRatings;
+
+                        float oldComplexTotal;
+                        float newComplexTotal;
+
+
+                        /*
+
+                        사용자1)
+                            맛 3
+                            차수 1
+                            혼잡도 3
+                        사용자2)
+                            맛 2
+                            차수 1
+                            혼잡도 2
+                        사용자3)
+                            맛 5
+                            차주 3
+                            혼잡도 1
+
+                         */
+
+                        int newNumComplex;
+                        if (visit == Code.VisitType.FIRST) {
+                            newNumComplex = _sikdang.getNumFirstComplex() + 1;
+                            oldComplexTotal = _sikdang.getAvgFirstComplex() * _sikdang.getNumFirstComplex();
+                            newComplexTotal = (oldComplexTotal + complex) / newNumComplex;
+                            _sikdang.setAvgFirstComplex(newComplexTotal);
+                            _sikdang.setNumFirstComplex(newNumComplex);
+
+                        } else if (visit == Code.VisitType.SECOND) {
+                            newNumComplex = _sikdang.getNumSecondComplex() + 1;
+                            oldComplexTotal = _sikdang.getAvgSecondComplex() * _sikdang.getNumSecondComplex();
+                            newComplexTotal = (oldComplexTotal + complex) / newNumComplex;
+                            _sikdang.setAvgSecondComplex(newComplexTotal);
+                            _sikdang.setNumSecondComplex(newNumComplex);
+
+                        } else { // THIRD
+                            newNumComplex = _sikdang.getNumThirdComplex() + 1;
+                            oldComplexTotal = _sikdang.getAvgThirdComplex() * _sikdang.getNumThirdComplex();
+                            newComplexTotal = (oldComplexTotal + complex) / newNumComplex;
+                            _sikdang.setAvgThirdComplex(newComplexTotal);
+                            _sikdang.setNumThirdComplex(newNumComplex);
+                        }
+
                         // Set new sikdang info
                         _sikdang.setNumRatings(newNumRatings);
                         _sikdang.setAvgTaste(newAvgTaste);
                         _sikdang.setViewType(Code.ViewType.REVIEWED_SIKDANG);
+                        _sikdang.setAvgPrice(newPriceTotal);
 
                         // Update sikdang
                         transaction.set(sikdangRef, _sikdang);
 
                         // Update rating (taste)
-                        Review review = new Review(f_user.getUid(),  ratingTaste.getRating());
+                        Review review = new Review(f_user.getUid(),  ratingTaste.getRating(), price, visit, complex);
                         transaction.set(reviewRef, review, SetOptions.merge());
 
                         return null;
@@ -356,9 +486,6 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
                         } else {
                             callProgressOnOff(1);
                         }
-
-
-
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -368,8 +495,16 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
                 });
             }
         });
+
     }
 
+    // 맛, 가격, 방문시간, 혼잡도는 필수 입력 값
+    private boolean chkValueInput () {
+        if (ratingTaste.getRating() > 0 && price > 0 && visit > 0 && complex > 0) {
+            return true;
+        } else
+            return false;
+    }
     private void uploadImage(String filename, String pathname) {
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
@@ -391,7 +526,6 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
                     Log.d("plz", "콜백 처리 다 끝났다! 마지막 처리완료 안내 함수 부르자");
                     upLoadImages();
                 }
-
             }
         };
 

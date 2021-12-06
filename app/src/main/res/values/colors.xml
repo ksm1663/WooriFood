@@ -16,12 +16,14 @@
     <color name="deep_blue">#FF3F72AF</color>
     <color name="dark_blue">#E6112D4E</color>
     <color name="light_blue">#E6DBE2EF</color>
-
-
-
-
-
     <color name="yello">#FFFFBB33</color>
+
+
+    <color name="valuebar_start">#FFFFC300 </color>
+    <color name="valuebar_center">#FF68B848</color>
+    <color name="valuebar_end">#FFDB4536</color>
+    <color name="valuebar_base">#FFDBE2EF</color>
+
 </resources>
 
 
