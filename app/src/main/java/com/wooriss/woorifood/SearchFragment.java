@@ -120,7 +120,8 @@ public class SearchFragment extends Fragment {
         String userId = MainActivity.user.getUser_mail();
 //        String userBranch = ((MainActivity)context).getF_user().getBranch_name();
         String userBranch = MainActivity.user.getBranch_name();
-        String printMainText = userId +"(" + userBranch + ") " + MainActivity.user.getUser_position();
+        String printMainText = MainActivity.user.getUser_name() + " 님 안녕하세요!" + " (" + userBranch +")";
+//        String printMainText = userId +"(" + userBranch + ") " + MainActivity.user.getUser_position();
         mainText.setText(printMainText);
     }
 

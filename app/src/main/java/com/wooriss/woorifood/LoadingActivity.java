@@ -77,7 +77,7 @@ public class LoadingActivity extends AppCompatActivity {
         intent.putExtra("USER_INFO", user);
 //        intent.putExtra("BRANCH_INFO", branch_info);
 
-        Log.d("plz", "onPause : " + user.getBranch_addr());
+//        Log.d("plz", "onPause : " + user.getBranch_addr());
 
         startActivity(intent);
     }
@@ -108,7 +108,7 @@ public class LoadingActivity extends AppCompatActivity {
         this.f_user = fu;
         this.user = u;
 
-        Log.d("plz", "setUser : " + user.getBranch_addr());
+//        Log.d("plz", "setUser : " + user.getBranch_addr());
     }
 
 

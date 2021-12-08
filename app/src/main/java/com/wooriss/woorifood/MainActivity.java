@@ -160,6 +160,11 @@ public class MainActivity extends AppCompatActivity implements UpdateDataService
                         return true;
                     case R.id.page_3:// Respond to navigation item 3 click
                         //transferTo(PlacesFragment.newInstance("param1", "param2"));
+                        Bundle bundle_ = new Bundle();
+                        bundle_.putParcelable("f_user", f_user);
+                        MyReviewFragment myReviewFragment = MyReviewFragment.newInstance(bundle_);
+                        transferTo(myReviewFragment);
+
                         return true;
                     case R.id.page_4:// Respond to navigation item 4 click
                         //transferTo(NewsFragment.newInstance("param1", "param2"));

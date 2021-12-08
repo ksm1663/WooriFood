@@ -11,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -28,13 +30,10 @@ import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -77,10 +76,8 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
     private TextView sikdangPhoneText;
     private RatingBar sikdangTasteAvgRating;
 
-    private SeekBar sikdangPriceAvgSeek;
-    private SeekBar sikdangFirstComplexSeek;
-    private SeekBar sikdangSecondComplexSeek;
-    private SeekBar sikdangThirdComplexSeek;
+    private SeekBar seekPriceAvg;
+    private SeekBar seekLuxuryAvg;
 
     private BarChart sikdangComplexChart;
 
@@ -88,6 +85,9 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
     private List<ReviewSet> reviewSetList;
     private ReviewAdapter reviewAdapter;
 
+
+    private LinearLayout laySikdangInfo;
+    private ImageView btnClickMinimal;
 
     public DetailFragment() {
     }
@@ -133,6 +133,7 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
         //setSikdangInfo();
 
         addListenerToPhoneText();
+        addListenerToMinimalBtn();
 
 
 
@@ -150,10 +151,14 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
         sikdangPhoneText = v.findViewById(R.id.textSikdangPhone);
         sikdangTasteAvgRating = v.findViewById(R.id.ratingSikdangTasteAvg);
 
-        sikdangPriceAvgSeek = v.findViewById(R.id.seekPrice);
-        sikdangFirstComplexSeek = v.findViewById(R.id.seekFirstComplex);
-        sikdangSecondComplexSeek = v.findViewById(R.id.seekSecondComplex);
-        sikdangThirdComplexSeek = v.findViewById(R.id.seekThirdComplex);
+        laySikdangInfo = v.findViewById(R.id.laySikdangInfo);
+        btnClickMinimal = v.findViewById(R.id.btnClickMinimal);
+
+
+        seekPriceAvg = v.findViewById(R.id.seekPrice);
+        seekLuxuryAvg = v.findViewById(R.id.seekLuxury);
+
+
 
         sikdangComplexChart = v.findViewById(R.id.sikdangComplexChart);
 
@@ -183,6 +188,24 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
         });
     }
 
+    private boolean isMinimal = false;
+    private void addListenerToMinimalBtn() {
+        btnClickMinimal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!isMinimal) {
+                    isMinimal = true;
+                    laySikdangInfo.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 35, getResources().getDisplayMetrics());
+                }
+                else {
+                    isMinimal = false;
+                    laySikdangInfo.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getResources().getDisplayMetrics());
+                }
+
+                laySikdangInfo.requestLayout();
+            }
+        });
+    }
 
     public class MyValueFormatter extends ValueFormatter {
 
@@ -214,13 +237,10 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
         sikdangPhoneText.setText(sikdang.getPhone());
         sikdangTasteAvgRating.setRating((float) sikdang.getAvgTaste());
 
-        sikdangPriceAvgSeek.setProgress((int)(sikdang.getAvgPrice()*10));
-        sikdangFirstComplexSeek.setProgress((int)(sikdang.getAvgFirstComplex()*10));
-        sikdangSecondComplexSeek.setProgress((int)(sikdang.getAvgSecondComplex()*10));
-        sikdangThirdComplexSeek.setProgress((int)(sikdang.getAvgThirdComplex()*10));
-
-        sikdangPriceAvgSeek.setOnTouchListener(this);
-
+        seekPriceAvg.setProgress((int)(sikdang.getAvgPrice()*10));
+        seekPriceAvg.setOnTouchListener(this);
+        seekLuxuryAvg.setProgress((int)(sikdang.getAvgLuxury()*10));
+        seekLuxuryAvg.setOnTouchListener(this);
 
         List<BarEntry> barEntryList = new ArrayList<>();
 
@@ -230,12 +250,6 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
         barEntryList.add(new BarEntry(3f,sikdang.getAvgThirdComplex()*10));
         barEntryList.add(new BarEntry(3f,30));
 
-//        Log.d("plz", "sikdang.getAvgFirstComplex() : " + sikdang.getAvgFirstComplex());
-//        Log.d("plz", barEntryList.get(0).getY()+"");
-//        Log.d("plz", "sikdang.getAvgSecondComplex() : " + sikdang.getAvgSecondComplex());
-//        Log.d("plz", barEntryList.get(1).getY()+"");
-//        Log.d("plz", "sikdang.getAvgThirdComplex() : " + sikdang.getAvgThirdComplex());
-//        Log.d("plz", barEntryList.get(2).getY()+"");
 
         BarDataSet barDataSet = new BarDataSet(barEntryList,"");
 //        barDataSet.setColor(R.color.yello);
@@ -249,6 +263,7 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
         sikdangComplexChart.notifyDataSetChanged();
         sikdangComplexChart.invalidate();
         barData.setDrawValues(true);
+
 
         sikdangComplexChart.getDescription().setEnabled(false); // 차트 옆에 표기되는 desc
         sikdangComplexChart.setMaxVisibleValueCount(5); // 최대 보이는 그래프 개수
@@ -266,6 +281,7 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
         sikdangComplexChart.getAxisLeft().mAxisMaximum = 30;
         sikdangComplexChart.getAxisLeft().setGranularity(0.1f); // 1 단위마다 선 그리기
         sikdangComplexChart.getAxisLeft().setGranularityEnabled(true);
+        sikdangComplexChart.getAxisLeft().setTextSize(13);
 
         sikdangComplexChart.getAxisLeft().setDrawLabels(true);
 //        sikdangComplexChart.getAxisLeft().setSpaceBottom(100);
@@ -304,13 +320,12 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
 
 //        sikdangComplexChart.getAxisLeft().setDrawGridLines(false); // 격자 라인
 //        sikdangComplexChart.getAxisLeft().setDrawAxisLine(false); // 축 그리기
-
-
         sikdangComplexChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         sikdangComplexChart.getXAxis().setGranularity(1f); // 간격
         sikdangComplexChart.getXAxis().setDrawGridLines(false); // 격자
         sikdangComplexChart.getXAxis().setDrawAxisLine(true); // 축 그림
         sikdangComplexChart.getXAxis().setDrawLabels(true); // 라벨
+        sikdangComplexChart.getXAxis().setTextSize(12);
 
         sikdangComplexChart.getXAxis().setValueFormatter(new ValueFormatter() {
             private String[] gubun = {"1차", "2차", "3차", "", ""};
@@ -375,7 +390,7 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
 
                         Log.d("plz", "[" + sikdang.getPlace_name() + "] 의 평균 맛평점 : " + sikdang.getAvgTaste());
 
-                        document.getReference().collection("reviews").orderBy("timestamp", Query.Direction.ASCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        document.getReference().collection("reviews").orderBy("timestamp", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
@@ -430,7 +445,7 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
                 }
                 else {
                     Log.d("plz", "gogogogogogogo");
-                    reviewSetList.get(pos).user = task.getResult().getValue(User.class);;
+                    reviewSetList.get(pos).user = task.getResult().getValue(User.class);
 //                    _user = task.getResult().getValue(User.class);
 //                    u[0] = task.getResult().getValue(User.class);
 //                    user = (User)tmpUser.clone();
@@ -552,6 +567,14 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
             User user = reviewSet.getUser();
 //            String uploadUser = reviewSet.getUser().getUser_name();
             double ratingTaste = reviewSet.getReview().getTaste();
+
+            int price = reviewSet.getReview().getPrice();
+            int luxury = reviewSet.getReview().getLuxury();
+            int visit = reviewSet.getReview().getVisit();
+            int complex = reviewSet.getReview().getComplex();
+
+            String comment = reviewSet.getReview().getComment();
+
             List<Uri> userImages = reviewSet.getImages();
 
              detailImageViewAdapter = new DetailImageViewAdapter(userImages);
@@ -559,11 +582,51 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
             ((ReviewItemHolder) holder).getImageListInDetailView().setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             ((ReviewItemHolder) holder).getImageListInDetailView().setAdapter(detailImageViewAdapter);
 
+            if ((userImages == null) || (userImages.size() <=0))
+                ((ReviewItemHolder) holder).getImageListInDetailView().setVisibility(View.GONE);
+            else
+                ((ReviewItemHolder) holder).getImageListInDetailView().setVisibility(View.VISIBLE);
+
+            if ((comment == null) || (comment.length() <=0))
+                ((ReviewItemHolder) holder).getLayComment().setVisibility(View.GONE);
+            else
+                ((ReviewItemHolder) holder).getLayComment().setVisibility(View.VISIBLE);
+
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd (HH:mm:ss)");
             ((ReviewItemHolder) holder).getTextUploadDate().setText(format.format(uploadDate.toDate()));
             String reviewerInfo = user.getUser_name() + " " + user.getUser_position() + " (" + user.getBranch_name() + ")";
             ((ReviewItemHolder) holder).getTextUploadUser().setText(reviewerInfo);
-            ((ReviewItemHolder) holder).getRatingTasteAvg().setRating((float) ratingTaste);
+            ((ReviewItemHolder) holder).getRatingTaste().setRating((float) ratingTaste);
+
+            ((ReviewItemHolder) holder).getTextComment().setText(comment);
+
+            if (price == Code.PriceType.CHEAP)
+                ((ReviewItemHolder) holder).getRadioPrice().setText("쌈");
+            else if (price == Code.PriceType.NORMAL)
+                ((ReviewItemHolder) holder).getRadioPrice().setText("보통");
+            else
+                ((ReviewItemHolder) holder).getRadioPrice().setText("비쌈");
+
+            if (luxury == Code.LuxuryType.BAD)
+                ((ReviewItemHolder) holder).getRadioLuxury().setText("없음");
+            else if (luxury == Code.LuxuryType.NORMAL)
+                ((ReviewItemHolder) holder).getRadioLuxury().setText("무난");
+            else
+                ((ReviewItemHolder) holder).getRadioLuxury().setText("고급");
+
+            if (visit == Code.VisitType.FIRST)
+                ((ReviewItemHolder) holder).getRadioVisit().setText("1차");
+            else if (visit == Code.VisitType.SECOND)
+                ((ReviewItemHolder) holder).getRadioVisit().setText("2차");
+            else
+                ((ReviewItemHolder) holder).getRadioVisit().setText("3차");
+
+            if (complex == Code.ComplexType.COZY)
+                ((ReviewItemHolder) holder).getRadioComplex().setText("여유");
+            else if (complex == Code.ComplexType.NORMAL)
+                ((ReviewItemHolder) holder).getRadioComplex().setText("무난");
+            else
+                ((ReviewItemHolder) holder).getRadioComplex().setText("혼잡");
 //            ((ReviewItemHolder)holder).getImageListInDetailView().setAdapter();
         }
 
@@ -581,6 +644,14 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
             private TextView textUploadDate;
             private TextView textUploadUser;
             private RatingBar ratingTaste;
+
+            private RadioButton radioPrice;
+            private RadioButton radioLuxury;
+            private RadioButton radioVisit;
+            private RadioButton radioComplex;
+            private LinearLayout layComment;
+            private TextView textComment;
+
             private RecyclerView imageListInDetailView;
 
 
@@ -589,6 +660,14 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
                 textUploadDate = itemView.findViewById(R.id.textUploadDate);
                 textUploadUser = itemView.findViewById(R.id.textUploadUser);
                 ratingTaste = itemView.findViewById(R.id.ratingTaste);
+
+                radioPrice = itemView.findViewById(R.id.radioPrice);
+                radioLuxury = itemView.findViewById(R.id.radioLuxury);
+                radioVisit = itemView.findViewById(R.id.radioVisit);
+                radioComplex = itemView.findViewById(R.id.radioComplex);
+                layComment = itemView.findViewById(R.id.layComment);
+                textComment = itemView.findViewById(R.id.textComment);
+
                 imageListInDetailView = itemView.findViewById(R.id.imageListInDetailView);
 
                 //클릭 이벤트 달고 싶으면 itemView.setOnClickListener
@@ -602,8 +681,32 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
                 return textUploadUser;
             }
 
-            public RatingBar getRatingTasteAvg() {
+            public RatingBar getRatingTaste() {
                 return ratingTaste;
+            }
+
+            public RadioButton getRadioPrice() {
+                return radioPrice;
+            }
+
+            public RadioButton getRadioLuxury() {
+                return radioLuxury;
+            }
+
+            public RadioButton getRadioVisit() {
+                return radioVisit;
+            }
+
+            public RadioButton getRadioComplex() {
+                return radioComplex;
+            }
+
+            public LinearLayout getLayComment() {
+                return layComment;
+            }
+
+            public TextView getTextComment() {
+                return textComment;
             }
 
             public RecyclerView getImageListInDetailView() {
@@ -611,9 +714,6 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
             }
         }
     }
-
-
-
 
 
     // inner of inner Class : 리뷰 내 이미지리스트 넣을 리사이클러 어댑터
@@ -633,8 +733,8 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
             View view = inflater.inflate(R.layout.item_image, parent, false);
 
             ImageView ima_bigger_frame = (ImageView) view.findViewById(R.id.imageItem);
-            ima_bigger_frame.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 110, getResources().getDisplayMetrics());
-            ima_bigger_frame.getLayoutParams().width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 110, getResources().getDisplayMetrics());;
+            ima_bigger_frame.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, getResources().getDisplayMetrics());
+            ima_bigger_frame.getLayoutParams().width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, getResources().getDisplayMetrics());;
             ima_bigger_frame.requestLayout();
 
             return new DetailImageViewAdapter.ImageItemHolder(view);
@@ -658,7 +758,6 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
             else
                 return 0;
         }
-
 
         // inner or inner Class : 이미지리스트 안에 들어갈 아이템
         public class ImageItemHolder extends RecyclerView.ViewHolder {

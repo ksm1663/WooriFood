@@ -53,8 +53,10 @@ public class MainListFragment extends Fragment {
     public static MainListFragment newInstance() { //(String param1, String param2) {
         if(mainListFragment ==null) {
             mainListFragment = new MainListFragment();
-            MainActivity.foodLocation = new FoodLocation(mainListFragment, MainActivity.user.getBranch_addr());
-            reviewdSikdangAdapter = new SikdangAdapter(null);
+            if (MainActivity.user != null) {
+                MainActivity.foodLocation = new FoodLocation(mainListFragment, MainActivity.user.getBranch_addr());
+                reviewdSikdangAdapter = new SikdangAdapter(null);
+            }
         }
         return mainListFragment;
     }
@@ -115,7 +117,8 @@ public class MainListFragment extends Fragment {
         String userId = MainActivity.user.getUser_mail();
 //        String userBranch = ((MainActivity)context).getF_user().getBranch_name();
         String userBranch = MainActivity.user.getBranch_name();
-        String printMainText = userId +"(" + userBranch + ") " + MainActivity.user.getUser_position();
+        String printMainText = MainActivity.user.getUser_name() + " 님 안녕하세요!" + " (" + userBranch +")";
+//        userId +"(" + userBranch + ") " + MainActivity.user.getUser_position();
         infoText.setText(printMainText);
 
         branchEdit.setHint(userBranch);

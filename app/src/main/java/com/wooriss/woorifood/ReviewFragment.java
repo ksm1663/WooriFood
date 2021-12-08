@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -64,6 +65,7 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
     private FirebaseUser f_user;
     private User user;
     private Sikdang sikdang;
+    private TextView textSikdangName;
 //
 //    private Button btnPicture;
     private Button btnUpload;
@@ -164,6 +166,8 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
         radioComplex.setOnCheckedChangeListener(this);
         radioLuxury.setOnCheckedChangeListener(this);
 
+        textSikdangName.setText(sikdang.getPlace_name());
+
         requestPermissions();
 //        chkCameraPermission();
 
@@ -179,6 +183,8 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
     private void findViews(View v) {
 
         btngetImage = v.findViewById(R.id.imageUploadBtn);
+
+        textSikdangName = v.findViewById(R.id.textSikdangName);
 //        btnPicture = v.findViewById(R.id.btn_picture);
         btnUpload = v.findViewById(R.id.btn_upload);
         ratingTaste = v.findViewById(R.id.ratingTaste);

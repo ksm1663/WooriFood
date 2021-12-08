@@ -15,7 +15,7 @@
         android:id="@+id/page_3"
         android:enabled="true"
         android:icon="@drawable/ic_sharp"
-        android:title="꾸꾸" />
+        android:title="내리뷰" />
     <item
         android:id="@+id/page_4"
         android:enabled="true"
