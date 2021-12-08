@@ -37,7 +37,8 @@
         </activity>
 
         <activity
-            android:name=".MainActivity" >
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan">
         </activity>
 
         <!--카카오맵 활용을 위한 KEY 추가 -->
