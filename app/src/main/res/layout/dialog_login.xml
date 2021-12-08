@@ -7,6 +7,23 @@
     android:orientation="vertical"
     android:padding="10dp"
     android:id="@+id/layer_main">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="right">
+        <ImageView
+            android:src="@drawable/ic_man"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="left"/>
+        <ImageView
+            android:src="@drawable/ic_woman"
+            android:layout_width="70dp"
+            android:layout_height="70dp" />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/test"
@@ -16,6 +33,7 @@
         android:padding="10dp"
         android:orientation="vertical">
 
+
 <!-- 아이디 아이콘, 아이디 입력창, 도메인 스피 레이어 -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,12 +41,13 @@
             android:orientation="horizontal">
 
             <ImageView
-                app:srcCompat="@drawable/login_person"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:gravity="center" />
+                app:srcCompat="@drawable/ic_pizza"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center|center_vertical" />
 
             <EditText
+                android:background="@color/transparent"
                 android:id="@+id/text_id"
                 android:layout_width="110dp"
                 android:layout_height="45dp"
@@ -48,12 +67,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <ImageView
-                app:srcCompat="@drawable/login_password"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:gravity="center" />
+                app:srcCompat="@drawable/ic_chicken"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center|center_vertical" />
 
             <EditText
+                android:background="@color/transparent"
                 android:id="@+id/text_pw"
                 android:layout_width="330dp"
                 android:layout_height="45dp"
@@ -75,12 +95,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <ImageView
-                app:srcCompat="@drawable/join_info"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:gravity="center" />
+                app:srcCompat="@drawable/ic_donut"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center|center_vertical" />
 
             <EditText
+                android:background="@color/transparent"
                 android:id="@+id/text_branch"
                 android:layout_width="330dp"
                 android:layout_height="45dp"
@@ -94,12 +115,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <ImageView
-                app:srcCompat="@drawable/join_info"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:gravity="center" />
+                app:srcCompat="@drawable/ic_icecream"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center|center_vertical" />
 
             <EditText
+                android:background="@color/transparent"
                 android:id="@+id/text_username"
                 android:layout_width="330dp"
                 android:layout_height="45dp"
@@ -113,10 +135,10 @@
             android:orientation="horizontal">
 
             <ImageView
-                app:srcCompat="@drawable/login_person"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:gravity="center" />
+                app:srcCompat="@drawable/ic_pancake"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center|center_vertical" />
 
             <Spinner
                 android:id="@+id/spin_position"
@@ -133,18 +155,20 @@
             android:orientation="horizontal"
             android:padding="10dp"
             android:gravity="center">
-            <Button
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.WooriFood.Button"
                 android:id="@+id/btn_back"
                 android:layout_width="100dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="20dp"
                 android:text="이전으로"/>
-            <Button
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.WooriFood.Button"
                 android:id="@+id/btn_realJoin"
                 android:layout_width="100dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="20dp"
-                android:text="!!등록!!"/>
+                android:text="등록하기"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -156,13 +180,15 @@
             android:orientation="horizontal"
             android:padding="10dp"
             android:gravity="center">
-            <Button
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.WooriFood.Button"
                 android:id="@+id/btn_login"
                 android:layout_width="100dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="20dp"
-                android:text="로그인!"/>
-            <Button
+                android:text="로그인"/>
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.WooriFood.Button"
                 android:id="@+id/btn_join"
                 android:layout_width="100dp"
                 android:layout_height="50dp"
@@ -171,5 +197,4 @@
         </LinearLayout>
 
     </LinearLayout>
-
 </LinearLayout>

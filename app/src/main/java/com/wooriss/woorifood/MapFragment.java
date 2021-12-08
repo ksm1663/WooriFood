@@ -107,26 +107,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+
+    private String cur_branchName="";
     @UiThread
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         this.naverMap = naverMap;
         if (setCameraLocation()) { // 카메라 위치 선정 지점으로 성공 배치 시
             Log.d("plz", "onMapReaddy in setCameraLocation is true");
-            setMarkerBranch();
+
+
+            cur_branchName = MainActivity.user.getBranch_name();
 
             if (mapFlag == Code.MapType.SEARCH_MAP) {
                 if (SearchFragment.pageListSikdang != null) {
+                    branchX = Double.valueOf(FoodLocation.tmpX);
+                    branchY = Double.valueOf(FoodLocation.tmpY);
+                    moveCamera(branchX, branchY);
                     setMarkerSikdangList(SearchFragment.pageListSikdang.body().getDocuments());
                 }
             }
             else {
                 if (MainListFragment.mainSikdangList != null) {
+                    if (MainListFragment.branch_otherName.length()>0)
+                        cur_branchName = MainListFragment.branch_otherName;
                     setMarkerSikdangList(MainListFragment.mainSikdangList);
                 }
 
             }
-
+            setMarkerBranch();
             addListenerToMap();
         }
     }
@@ -238,7 +247,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         marker.setPosition(new LatLng(branchY, branchX));
         marker.setIcon(MarkerIcons.BLACK);
         marker.setIconTintColor(Color.BLUE);
-        marker.setCaptionText(MainActivity.user.getBranch_name());
+        marker.setCaptionText(cur_branchName);
         marker.setCaptionColor(Color.BLUE);
         marker.setMap(naverMap);
     }
@@ -272,6 +281,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void moveCamera(double x, double y) {
+        Log.d("plz", "moveCamera : x : " + x + ", y : " + y);
 //        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(Double.valueOf(FoodLocation.y), Double.valueOf(FoodLocation.x)));
         CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(y, x));
         naverMap.moveCamera(cameraUpdate);

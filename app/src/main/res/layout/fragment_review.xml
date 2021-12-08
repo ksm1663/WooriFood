@@ -6,7 +6,8 @@
     android:orientation="vertical">
 
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.WooriFood.Button"
         android:id="@+id/btn_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,12 +28,11 @@
             android:layout_marginLeft="20dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="맛*"
                 android:textSize="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="30dp"/>
+                android:layout_gravity="center_vertical" />
 
         <RatingBar
             android:id="@+id/ratingTaste"
@@ -48,15 +48,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginLeft="20dp">
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="가격*"
                 android:textSize="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="30dp"/>
+                android:layout_gravity="center_vertical" />
 
             <RadioGroup
                 android:id="@+id/radioPrice"
@@ -64,43 +64,113 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <RadioButton
+                    android:button="@null"
+                    android:background="@drawable/custom_radiobutton"
+                    android:textColor="@drawable/custom_radiotext"
+                    android:textAlignment="center"
                     android:id="@+id/radioPriceCheap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="쌈"
                     android:fontFamily="@font/nanumsquareround"
-                    android:textSize="20dp"/>
+                    android:textSize="15dp"/>
                 <RadioButton
+                    android:button="@null"
+                    android:background="@drawable/custom_radiobutton"
+                    android:textColor="@drawable/custom_radiotext"
+                    android:textAlignment="center"
+                    android:layout_marginLeft="10dp"
                     android:id="@+id/radioPriceNormal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="보통"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:fontFamily="@font/nanumsquareround"/>
                 <RadioButton
+                    android:button="@null"
+                    android:background="@drawable/custom_radiobutton"
+                    android:textColor="@drawable/custom_radiotext"
+                    android:textAlignment="center"
+                    android:layout_marginLeft="10dp"
                     android:id="@+id/radioPriceExpensive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="비쌈"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:fontFamily="@font/nanumsquareround"/>
             </RadioGroup>
 
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="고급짐*"
+                android:textSize="20dp"
+                android:layout_gravity="center_vertical" />
+
+            <RadioGroup
+                android:id="@+id/radioLuxury"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:button="@null"
+                    android:background="@drawable/custom_radiobutton"
+                    android:textColor="@drawable/custom_radiotext"
+                    android:textAlignment="center"
+                    android:id="@+id/radioLuxuryBad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="없음"
+                    android:fontFamily="@font/nanumsquareround"
+                    android:textSize="15dp"/>
+                <RadioButton
+                    android:button="@null"
+                    android:background="@drawable/custom_radiobutton"
+                    android:textColor="@drawable/custom_radiotext"
+                    android:textAlignment="center"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/radioLuxuryNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="무난"
+                    android:textSize="15dp"
+                    android:fontFamily="@font/nanumsquareround"/>
+                <RadioButton
+                    android:button="@null"
+                    android:background="@drawable/custom_radiobutton"
+                    android:textColor="@drawable/custom_radiotext"
+                    android:textAlignment="center"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/radioLuxuryGood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="고급"
+                    android:textSize="15dp"
+                    android:fontFamily="@font/nanumsquareround"/>
+            </RadioGroup>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginLeft="20dp">
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="방문시간*"
                 android:textSize="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="30dp"/>
+                android:layout_gravity="center_vertical" />
 
             <RadioGroup
                 android:id="@+id/radioVisit"
@@ -108,25 +178,39 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <RadioButton
+                    android:button="@null"
+                    android:background="@drawable/custom_radiobutton"
+                    android:textColor="@drawable/custom_radiotext"
+                    android:textAlignment="center"
                     android:id="@+id/radioVisitFirst"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1차"
                     android:fontFamily="@font/nanumsquareround"
-                    android:textSize="20dp"/>
+                    android:textSize="15dp"/>
                 <RadioButton
+                    android:button="@null"
+                    android:background="@drawable/custom_radiobutton"
+                    android:textColor="@drawable/custom_radiotext"
+                    android:textAlignment="center"
+                    android:layout_marginLeft="10dp"
                     android:id="@+id/radioVisitSecond"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2차"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:fontFamily="@font/nanumsquareround"/>
                 <RadioButton
+                    android:button="@null"
+                    android:background="@drawable/custom_radiobutton"
+                    android:textColor="@drawable/custom_radiotext"
+                    android:textAlignment="center"
+                    android:layout_marginLeft="10dp"
                     android:id="@+id/radioVisitThird"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="3차"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:fontFamily="@font/nanumsquareround"/>
             </RadioGroup>
         </LinearLayout>
@@ -135,15 +219,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginLeft="20dp">
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="혼잡도*"
                 android:textSize="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="30dp"/>
+                android:layout_gravity="center_vertical" />
 
             <RadioGroup
                 android:id="@+id/radioComplex"
@@ -151,25 +235,39 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <RadioButton
+                    android:button="@null"
+                    android:background="@drawable/custom_radiobutton"
+                    android:textColor="@drawable/custom_radiotext"
+                    android:textAlignment="center"
                     android:id="@+id/radioComplexCozy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="여유"
                     android:fontFamily="@font/nanumsquareround"
-                    android:textSize="20dp"/>
+                    android:textSize="15dp"/>
                 <RadioButton
+                    android:button="@null"
+                    android:background="@drawable/custom_radiobutton"
+                    android:textColor="@drawable/custom_radiotext"
+                    android:textAlignment="center"
+                    android:layout_marginLeft="10dp"
                     android:id="@+id/radioComplexNormal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="무난"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:fontFamily="@font/nanumsquareround"/>
                 <RadioButton
+                    android:button="@null"
+                    android:background="@drawable/custom_radiobutton"
+                    android:textColor="@drawable/custom_radiotext"
+                    android:textAlignment="center"
+                    android:layout_marginLeft="10dp"
                     android:id="@+id/radioComplexBuzy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="복잡"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:fontFamily="@font/nanumsquareround"/>
             </RadioGroup>
         </LinearLayout>
@@ -179,15 +277,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginLeft="20dp">
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="코멘트"
                 android:textSize="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="30dp"/>
+                android:layout_gravity="center_vertical" />
 
             <EditText
                 android:id="@+id/editComment"

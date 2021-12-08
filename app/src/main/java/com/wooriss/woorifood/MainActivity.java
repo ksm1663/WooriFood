@@ -330,6 +330,7 @@ public class MainActivity extends AppCompatActivity implements UpdateDataService
                     if ( distance <= innerMeter) {
                         sikdang.setDistance(Integer.toString(distance));
                         reviewedSikdangList.add(sikdang);
+                        //MainListFragment.reviewdSikdangAdapter.notifyDataSetChanged();
 //                        Log.d("plz", sikdang.getPlace_name() + "(" + sikdang.getId() + ") : " + distance + "m");
                     }
                 }

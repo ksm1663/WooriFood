@@ -72,6 +72,7 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
     private RadioGroup radioPrice;
     private RadioGroup radioVisit;
     private RadioGroup radioComplex;
+    private RadioGroup radioLuxury;
 
 
 
@@ -87,6 +88,9 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
     private int price = 0;
     private int visit = 0;
     private int complex = 0;
+    private int luxury = 0;
+
+    private String comment = "";
 
 //    private List<Uri> imageList;
 
@@ -158,6 +162,7 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
         radioPrice.setOnCheckedChangeListener(this); //onCheckedChanged
         radioVisit.setOnCheckedChangeListener(this);
         radioComplex.setOnCheckedChangeListener(this);
+        radioLuxury.setOnCheckedChangeListener(this);
 
         requestPermissions();
 //        chkCameraPermission();
@@ -181,6 +186,7 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
         radioPrice = v.findViewById(R.id.radioPrice);
         radioVisit = v.findViewById(R.id.radioVisit);
         radioComplex = v.findViewById(R.id.radioComplex);
+        radioLuxury = v.findViewById(R.id.radioLuxury);
         editComment = v.findViewById(R.id.editComment);
 
 
@@ -287,7 +293,18 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
                     break;
             }
 
-        } else {
+        } else if (radioGroup == radioLuxury) {
+            switch (i) {
+                case R.id.radioLuxuryBad:
+                    luxury = Code.LuxuryType.BAD;
+                    break;
+                case R.id.radioLuxuryNormal:
+                    luxury = Code.LuxuryType.NORMAL;
+                    break;
+                case R.id.radioLuxuryGood:
+                    luxury = Code.LuxuryType.GOOD;
+                    break;
+            }
 
         }
 
@@ -415,26 +432,12 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
                         float oldPriceTotal = _sikdang.getAvgPrice() * _sikdang.getNumRatings();
                         float newPriceTotal = (oldPriceTotal + price) / newNumRatings;
 
+                        float oldLuxuryTotal = _sikdang.getAvgLuxury() * _sikdang.getAvgLuxury();
+                        float newLuxuryTotal = (oldLuxuryTotal + luxury) / newNumRatings;
+
                         float oldComplexTotal;
                         float newComplexTotal;
 
-
-                        /*
-
-                        사용자1)
-                            맛 3
-                            차수 1
-                            혼잡도 3
-                        사용자2)
-                            맛 2
-                            차수 1
-                            혼잡도 2
-                        사용자3)
-                            맛 5
-                            차주 3
-                            혼잡도 1
-
-                         */
 
                         int newNumComplex;
                         if (visit == Code.VisitType.FIRST) {
@@ -464,12 +467,14 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
                         _sikdang.setAvgTaste(newAvgTaste);
                         _sikdang.setViewType(Code.ViewType.REVIEWED_SIKDANG);
                         _sikdang.setAvgPrice(newPriceTotal);
+                        _sikdang.setAvgLuxury(newLuxuryTotal);
 
                         // Update sikdang
                         transaction.set(sikdangRef, _sikdang);
 
                         // Update rating (taste)
-                        Review review = new Review(f_user.getUid(),  ratingTaste.getRating(), price, visit, complex);
+                        comment = editComment.getText().toString();
+                        Review review = new Review(f_user.getUid(),  ratingTaste.getRating(), price, luxury, visit, complex, comment);
                         transaction.set(reviewRef, review, SetOptions.merge());
 
                         return null;
@@ -500,7 +505,7 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
 
     // 맛, 가격, 방문시간, 혼잡도는 필수 입력 값
     private boolean chkValueInput () {
-        if (ratingTaste.getRating() > 0 && price > 0 && visit > 0 && complex > 0) {
+        if ((ratingTaste.getRating() > 0) && (price > 0) && (visit > 0) && (complex > 0) && (luxury > 0)) {
             return true;
         } else
             return false;

@@ -33,6 +33,12 @@ public class Code {
         public static final int BUZY = 3;
     }
 
+    public class LuxuryType {
+        public static final int BAD = 1;
+        public static final int NORMAL = 2;
+        public static final int GOOD = 3;
+    }
+
 
 
 

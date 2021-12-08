@@ -29,4 +29,61 @@
         <item name="colorControlActivated">@color/yello</item>
     </style>
 
+
+
+    <style name="Widget.WooriFood.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextAppearance">@style/TextAppearance.WooriFood.TextInputLayout.HintText</item>
+        <item name="hintTextColor">@color/deep_blue</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="boxStrokeColor">@color/deep_blue</item>
+        <item name="android:textColorHint">@color/deep_blue</item>
+    </style>
+
+    <style name="TextAppearance.WooriFood.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textColor">@color/deep_blue</item>
+        <item name="hintTextColor">@color/deep_blue</item>
+        <item name="android:textColorHint">@color/deep_blue</item>
+    </style>
+
+    <style name="Widget.WooriFood.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="fontFamily">@font/nanumsquareround</item>
+<!--        <item name="android:textColor">?android:attr/textColorPrimary</item>-->
+        <item name="backgroundTint">@color/deep_blue</item>
+        <item name="android:stateListAnimator" tools:ignore="NewApi">
+            @animator/shr_next_button_state_list_anim
+        </item>
+    </style>
+
+    <style name="Widget.Shrine.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="Widget.WooriFood.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?attr/colorAccent</item>
+        <item name="android:theme">@style/Theme.WooriFood</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="titleTextAppearance">@style/TextAppearance.WooriFood.Toolbar</item>
+    </style>
+
+    <style name="TextAppearance.WooriFood.Toolbar" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.WooriFood.Title" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxStrokeColor">@color/deep_blue</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="android:textColorHint">@color/deep_blue</item>
+        <item name="hintTextColor">@color/deep_blue</item>
+        <item name="endIconTint">@color/deep_blue</item>
+        <item name="android:paddingBottom">12dp</item>
+    </style>
+
+
 </resources>

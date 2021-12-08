@@ -1,6 +1,7 @@
 package com.wooriss.woorifood;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -126,10 +127,12 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
         super.onViewCreated(view, savedInstanceState);
 
         findViews(view);
-
+        addListenerToUploadLay();
         downloadReviews();
 
         //setSikdangInfo();
+
+        addListenerToPhoneText();
 
 
 
@@ -165,8 +168,19 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
         reviewListInDetailView.setAdapter(reviewAdapter);
         reviewListInDetailView.setLayoutManager(new LinearLayoutManager(context));
 
-        addListenerToUploadLay();
 
+
+    }
+
+    private void addListenerToPhoneText() {
+        sikdangPhoneText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String phoneNumber = sikdangPhoneText.getText().toString().replaceAll("-", "");
+                Intent call = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+ phoneNumber));
+                startActivity(call);
+            }
+        });
     }
 
 

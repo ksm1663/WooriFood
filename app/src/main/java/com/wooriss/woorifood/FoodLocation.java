@@ -40,6 +40,11 @@ public class FoodLocation {
 
     public static String x;
     public static String y;
+
+    public static String tmpX;
+    public static String tmpY;
+
+
     private Context context;
 
     private static String searchKey;
@@ -61,7 +66,14 @@ public class FoodLocation {
 //        getBranchPosition (branchAddr);
 //    }
 
+    private int flag_otherBranch = 0;
     public FoodLocation(MainListFragment _context, String branchAddr) {
+        mainListFragment = _context;
+        getBranchPosition (branchAddr);
+    }
+
+    public FoodLocation(MainListFragment _context, String branchAddr, int flag) {
+        flag_otherBranch = flag;
         mainListFragment = _context;
         getBranchPosition (branchAddr);
     }
@@ -86,7 +98,13 @@ public class FoodLocation {
                 x = j.get("x").getAsString();
                 y = j.get("y").getAsString();
                 Log.d("plz", "지점주소 불러오기 완료! x : " + x + "/ y : " + y);
-                if (firstFlag == 1)
+
+                if (flag_otherBranch == 0) {
+                    tmpX = x;
+                    tmpY = y;
+                }
+
+                if ((firstFlag == 1) || (flag_otherBranch ==1))
                     mainListFragment.callSetMainList();
             }
 
@@ -104,7 +122,7 @@ public class FoodLocation {
 
         RetrofitService findSikdangService = RetrofitFactory.create();
         Call<PageListSikdang> sikdangCall = findSikdangService.getSikdangList(API_KEY_KAKAO, searchKey,
-                x, y, NEAR_KILOMETER, 1, "distance");
+                tmpX, tmpY, NEAR_KILOMETER, 1, "distance");
         sikdangCall.enqueue(callback);
     }
 
@@ -139,7 +157,7 @@ public class FoodLocation {
             if (response.isSuccessful()) {
                 Log.d("plz", response + "");
                 Log.d("plz", "식당 결과 수: " + response.body().getMeta().total_count + "");
-                if (response.body().getMeta().total_count > 0)
+                if ((searchfFragment != null) &&(response.body().getMeta().total_count > 0))
                     searchfFragment.setNullResult(false);
 
                 else

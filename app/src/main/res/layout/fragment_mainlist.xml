@@ -41,12 +41,11 @@
                 android:hint="지점 검색 "/>
 
             <ImageView
-                android:id="@+id/btn_refresh"
+                android:id="@+id/btn_searchBranch"
                 android:src="@drawable/ic_clicksearch"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginLeft="80dp"
-                android:layout_marginBottom="3dp"
                 android:layout_gravity="right|center_vertical" />
 
         </LinearLayout>
@@ -78,8 +77,9 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="리뷰식당이 없어용!"
+            android:text="리뷰식당이 없어요!\nㅠ_ㅠ"
             android:visibility="gone"
+            android:textAlignment="center"
             android:textSize="50dp"/>
     </FrameLayout>
 

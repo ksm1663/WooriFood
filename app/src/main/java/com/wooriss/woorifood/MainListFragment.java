@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -34,7 +35,7 @@ public class MainListFragment extends Fragment {
 
     private ImageView mapBtn;
     private EditText branchEdit;
-    private ImageView refreshBtn;
+    private ImageView searchBranchBtn;
     private TextView infoText;
     private SwipeRefreshLayout swipeMainlist;
     private TextView nonText;
@@ -81,9 +82,14 @@ public class MainListFragment extends Fragment {
 
         findViews(view);
 
+        addListenerToSearchEdit();
+
+        addListenerToSearchBtn();
+
         addListenerToMapBtn();
 
         addListenerToSwipeMainlist();
+
 
         if (FoodLocation.x != null)
             callSetMainList();
@@ -93,7 +99,7 @@ public class MainListFragment extends Fragment {
         mapBtn = v.findViewById(R.id.btn_map);
         branchEdit = v.findViewById(R.id.edit_branch);
         branchEdit.setInputType(InputType.TYPE_NULL);
-        refreshBtn = v.findViewById(R.id.btn_refresh);
+        searchBranchBtn = v.findViewById(R.id.btn_searchBranch);
         infoText = v.findViewById(R.id.text_info);
         nonText = v.findViewById(R.id.non_item);
 
@@ -114,6 +120,42 @@ public class MainListFragment extends Fragment {
 
         branchEdit.setHint(userBranch);
     }
+
+    private String branch_addr = "";
+    public static String branch_otherName = "";
+    private void addListenerToSearchEdit() {
+        branchEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new SearchBranchDialog(context, new SearchBranchDialog.ICustomDialogEventListener() {
+                    @Override
+                    public void customDialogEvent(HashMap<String, String> _branch_info) {
+                        // Do something with the value here, e.g. set a variable in the calling activity
+                        if (_branch_info != null) {
+                            //branch_info = _branch_info;
+                            branch_otherName = _branch_info.get("branch_name");
+                            branchEdit.setText(branch_otherName);
+                            branch_addr = _branch_info.get("branch_addr");
+                        }
+                    }
+                });
+            }
+        });
+    }
+    private void addListenerToSearchBtn() {
+//        private EditText branchEdit;
+//        private ImageView searchBranchBtn;
+        searchBranchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (branch_addr.length()>0) {
+                    MainActivity.foodLocation = new FoodLocation(mainListFragment, branch_addr, 1);
+                }
+
+            }
+        });
+    }
+
 
     private void addListenerToSwipeMainlist() {
         swipeMainlist.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

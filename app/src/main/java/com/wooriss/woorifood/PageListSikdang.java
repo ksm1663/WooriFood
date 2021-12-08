@@ -59,6 +59,8 @@ class Sikdang implements Serializable {
     private double avgTaste;
     private float avgPrice;
     private float avgVisit;
+    private float avgLuxury;
+
     private float avgFirstComplex;
     private float avgSecondComplex;
     private float avgThirdComplex;
@@ -211,6 +213,14 @@ class Sikdang implements Serializable {
 
     public void setNumThirdComplex(int numThirdComplex) {
         this.numThirdComplex = numThirdComplex;
+    }
+
+    public float getAvgLuxury() {
+        return avgLuxury;
+    }
+
+    public void setAvgLuxury(float avgLuxury) {
+        this.avgLuxury = avgLuxury;
     }
 }
 

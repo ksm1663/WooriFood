@@ -1,75 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/text_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name(Mail)" />
-
-        <TextView
-            android:id="@+id/text_userJoinDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="가입일" />
-
-        <TextView
-            android:id="@+id/text_userRecentDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="최근접속일" />
-
-        <EditText
-            android:id="@+id/edit_branch"
-            android:layout_width="330dp"
-            android:layout_height="45dp"
-            android:hint="소속지점" />
-
-        <TextView
-            android:id="@+id/text_userBranchAddr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="지점주소표시" />
-
-        <Spinner
-            android:id="@+id/spin_position"
-            android:layout_width="150dp"
-            android:layout_height="45dp" />
-
-        <Button
-            android:id="@+id/btn_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="수정" />
-
-
-
-    </LinearLayout>
+    tools:context=".UserInfoFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:paddingTop="16dp">
 
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|left"
+            android:layout_marginBottom="20dp"
+            android:text="안녕하세요"
+            android:lines="2"
+            android:textAppearance="@style/TextAppearance.WooriFood.Title" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/name_text_input"
+            style="@style/Widget.WooriFood.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="이름">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/name_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:enabled="false"
+                android:inputType="none"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/branch_text_input"
+            style="@style/Widget.WooriFood.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:helperText="helper"
+            android:hint="소속지점">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/branch_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:inputType="none"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/class_text_input"
+            style="@style/ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="직급">
+
+            <AutoCompleteTextView
+                android:id="@+id/class_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/save_button"
+                style="@style/Widget.WooriFood.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:text="저장" />
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="※ 가입일자 : "/>
+            <TextView
+                android:id="@+id/text_userJoinDate"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="yyyyMMddmmss"
+                android:layout_marginStart="5dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="※ 최근방문 : "/>
+            <TextView
+                android:id="@+id/text_userRecentDate"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="yyyyMMddmmss"
+                android:layout_marginStart="5dp"/>
+        </LinearLayout>
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</ScrollView>

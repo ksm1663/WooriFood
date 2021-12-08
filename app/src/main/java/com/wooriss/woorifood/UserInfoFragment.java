@@ -4,24 +4,24 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseUser;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,33 +30,31 @@ import java.util.HashMap;
 
 public class UserInfoFragment extends Fragment {
 
-//    private static UserInfoFragment userInfoFragment;
-
     private Context context;
-//
-//    private static final String ARG_PARAM1 = "param1";
-//    private static final String ARG_PARAM2 = "param2";
 
     private FirebaseUser f_user;
     private User user;
 
+    private TextView textTitle;
     private TextView textUsername;
+    private TextInputLayout textUserMail;
     private TextView textUserJoinDate;
     private TextView textUserRecentDate;
+
     private EditText editBranch;
-    private TextView textUserBranchAddr;
-    private Spinner spinPosition;
+    private TextInputLayout textUserBranchAddr;
+
+    private AutoCompleteTextView classTextView;
+
     private Button btnEdit;
-
-
 
 
     public UserInfoFragment() { }
 
     public static UserInfoFragment newInstance (Bundle bundle) {
-        UserInfoFragment userInfoFragment = new UserInfoFragment();
-        userInfoFragment.setArguments(bundle);
-        return userInfoFragment;
+        UserInfoFragment userInfoFragment2 = new UserInfoFragment();
+        userInfoFragment2.setArguments(bundle);
+        return userInfoFragment2;
     }
 
     @Override
@@ -65,8 +63,6 @@ public class UserInfoFragment extends Fragment {
         if (getArguments() != null) {
             f_user = getArguments().getParcelable("f_user");
             user = (User) getArguments().getSerializable("user");
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -88,46 +84,59 @@ public class UserInfoFragment extends Fragment {
         addListenerToEditBtn();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("plz", "UserInfoFragment is destroy");
-    }
 
     private void setInfoView() {
 
-        textUsername.setText(user.getUser_name() + "(" + user.getUser_mail() + ")");
+        textTitle.setText(user.getUser_name()+"님\n안녕하세요!");
+        textUsername.setText(user.getUser_name());
+        textUserMail.setHelperText( user.getUser_mail());
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd (HH:mm:ss)");
         textUserJoinDate.setText(format.format(new Date(f_user.getMetadata().getCreationTimestamp())));
         textUserRecentDate.setText(format.format(new Date(f_user.getMetadata().getLastSignInTimestamp())));
 
         editBranch.setText(user.getBranch_name());
-        textUserBranchAddr.setText(user.getBranch_addr());
+        textUserBranchAddr.setHelperText(user.getBranch_addr());
 
-
+        // false 해야 Filtering 동작 안함
+        classTextView.setText(user.getUser_position(),false);
     }
 
     private void findViews(View v) {
 
-        textUsername = v.findViewById(R.id.text_username);
+        textTitle = v.findViewById(R.id.text_title);
+        textUsername = v.findViewById(R.id.name_edit_text);
+        textUserMail = v.findViewById(R.id.name_text_input);
         textUserJoinDate = v.findViewById(R.id.text_userJoinDate);
         textUserRecentDate = v.findViewById(R.id.text_userRecentDate);
-        editBranch = v.findViewById(R.id.edit_branch);
-//        editBranch.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+
+        // branch_text_input
+        editBranch = v.findViewById(R.id.branch_edit_text);
         editBranch.setInputType(InputType.TYPE_NULL);
-        textUserBranchAddr = v.findViewById(R.id.text_userBranchAddr);
-        spinPosition = v.findViewById(R.id.spin_position);
-        btnEdit = v.findViewById(R.id.btn_edit);
+        textUserBranchAddr = v.findViewById(R.id.branch_text_input);
 
-        ArrayAdapter<String> adapter_pos = new ArrayAdapter<>(
-                context, android.R.layout.simple_spinner_item, context.getResources().getStringArray(R.array.positions)
+        btnEdit = v.findViewById(R.id.save_button);
+
+        classTextView = v.findViewById(R.id.class_text_view);
+
+        // DropDown Setting
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                context,
+                R.layout.dropdown_menu_item,
+                context.getResources().getStringArray(R.array.positions)
         );
-        adapter_pos.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinPosition.setAdapter(adapter_pos);
+        classTextView.setAdapter(adapter);
 
-        // 스피너 값은 여기서 세팅
-        spinPosition.setSelection(adapter_pos.getPosition(user.getUser_position()));
+//        ArrayAdapter<String> adapter_pos = new ArrayAdapter<>(
+//                context,
+//                android.R.layout.simple_spinner_item,
+//                context.getResources().getStringArray(R.array.positions)
+//        );
+//        adapter_pos.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+//        spinPosition.setAdapter(adapter_pos);
+//
+//        // 스피너 값은 여기서 세팅
+//        spinPosition.setSelection(adapter_pos.getPosition(user.getUser_position()));
 
         addListenerToBranchEdit();
     }
@@ -148,8 +157,11 @@ public class UserInfoFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
 
-                                    ((MainActivity)context).updateUserInfo(editBranch.getText().toString(),
-                                                            textUserBranchAddr.getText().toString(), spinPosition.getSelectedItem().toString());
+                                    ((MainActivity)context).updateUserInfo(
+                                            editBranch.getText().toString(),
+                                            textUserBranchAddr.getHelperText().toString(),
+                                            classTextView.getText().toString());
+                                    //spinPosition.getSelectedItem().toString());
 
                                 }})
                             .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
@@ -169,7 +181,7 @@ public class UserInfoFragment extends Fragment {
     private boolean isUserInfoChanged() {
 
         if ((editBranch.getText().toString().equals(user.getBranch_name())) &&
-                (spinPosition.getSelectedItem().toString().equals(user.getUser_position()))) {
+                (classTextView.getText().toString().equals(user.getUser_position()))) {
 
             Log.d("plz", "in ifff");
             return false;
@@ -190,11 +202,18 @@ public class UserInfoFragment extends Fragment {
                         if (_branch_info != null) {
                             //branch_info = _branch_info;
                             editBranch.setText(_branch_info.get("branch_name"));
-                            textUserBranchAddr.setText(_branch_info.get("branch_addr"));
+                            textUserBranchAddr.setHelperText(_branch_info.get("branch_addr"));
                         }
                     }
                 });
             }
         });
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("plz", "UserInfoFragment is destroy");
+    }
+
 }

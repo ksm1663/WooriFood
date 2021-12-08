@@ -102,15 +102,16 @@
             android:gravity="center">
             <ImageView
                 android:src="@drawable/ic_distance"
-                android:layout_width="60dp"
-                android:layout_height="60dp" />
+                android:layout_width="45dp"
+                android:layout_height="45dp" />
             <TextView
                 android:id="@+id/item_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="거리"
                 android:textSize="15dp"
-                android:layout_marginLeft="3dp"/>
+                android:layout_marginTop="3dp"
+                android:layout_gravity="center"/>
         </LinearLayout>
 
     </RelativeLayout>

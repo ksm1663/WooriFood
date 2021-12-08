@@ -10,6 +10,7 @@ public class Review {
 
     private int price;
     private int visit;
+    private int luxury;
     private int complex;
 
     private String comment;
@@ -18,12 +19,14 @@ public class Review {
 
     public Review() {}
 
-    public Review(String reviewerUid, double taste, int price, int visit, int complex) {
+    public Review(String reviewerUid, double taste, int price, int visit, int luxury, int complex, String comment) {
         this.reviewerUid = reviewerUid;
         this.taste = taste;
         this.price = price;
         this.visit = visit;
+        this.luxury = luxury;
         this.complex = complex;
+        this.comment = comment;
     }
 
     public double getTaste() {
@@ -48,6 +51,10 @@ public class Review {
 
     public int getVisit() {
         return visit;
+    }
+
+    public int getLuxury() {
+        return luxury;
     }
 
     public String getComment() {
