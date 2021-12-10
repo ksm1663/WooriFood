@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,7 @@ public class MyReviewFragment extends Fragment {
     private ReviewAdapter reviewAdapter;
 
     private TextView textCount;
+    private LinearLayout lay_nonReivew;
 
     public MyReviewFragment() { }
 
@@ -87,6 +89,8 @@ public class MyReviewFragment extends Fragment {
     }
 
     private void findViews(View v) {
+
+        lay_nonReivew = v.findViewById(R.id.lay_nonReivew);
         myReviewList = v.findViewById(R.id.myReviewList);
         reviewSetList = new ArrayList<>();
         reviewAdapter = new ReviewAdapter(reviewSetList, context);
@@ -112,6 +116,12 @@ public class MyReviewFragment extends Fragment {
                 Log.d("plz", queryDocumentSnapshots.getDocuments().toString());
                 List<Review> reviews = queryDocumentSnapshots.toObjects(Review.class);
                 textCount.setText("총 " + reviews.size() + "건");
+
+                if (reviews.size() <= 0)
+                    lay_nonReivew.setVisibility(View.VISIBLE);
+                else
+                    lay_nonReivew.setVisibility(View.GONE);
+
                 for (int i=0; i<reviews.size(); i++) {
 
 

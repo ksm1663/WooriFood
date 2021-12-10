@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -73,6 +74,8 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             int numRatings = sikdang.getNumRatings();
             double avgTaste = sikdang.getAvgTaste();
+            float avgPrice = sikdang.getAvgPrice();
+            float avgLuxury = sikdang.getAvgLuxury();
 
             Log.d("plz", "why?????? : " + avgTaste + "  /  " + numRatings);
 
@@ -83,6 +86,11 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((ReviewedSikdangItemViewHolder)viewHolder).getItemReviewCnt().setText(numRatings+"");
             ((ReviewedSikdangItemViewHolder)viewHolder).getItemAvgTaste().setText(Math.round(sikdang.getAvgTaste()*10)/10.0 +"");
             ((ReviewedSikdangItemViewHolder)viewHolder).getItemAvgTasteBar().setRating((float) avgTaste);
+
+            //(int)(sikdang.getAvgPrice()*10)
+            ((ReviewedSikdangItemViewHolder)viewHolder).getItemAvgPrice().setProgress((int)(avgPrice*10));
+            ((ReviewedSikdangItemViewHolder)viewHolder).getItemAvgLuxury().setProgress((int)(avgLuxury*10));
+
         }
     }
 
@@ -163,6 +171,9 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private TextView itemAvgTaste;
         private RatingBar itemAvgTasteBar;
 
+        private SeekBar itemAvgPrice;
+        private SeekBar itemAvgLuxury;
+
         ReviewedSikdangItemViewHolder(View itemView) {
             super(itemView);
             itemPlaceNameView = itemView.findViewById(R.id.item_place_name);
@@ -171,6 +182,9 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             itemReviewCnt = itemView.findViewById(R.id.item_reviewCnt);
             itemAvgTaste = itemView.findViewById(R.id.item_avgTaste);
             itemAvgTasteBar = itemView.findViewById(R.id.item_avgTasteBar);
+
+            itemAvgPrice = itemView.findViewById(R.id.seekPrice_);
+            itemAvgLuxury = itemView.findViewById(R.id.seekLuxury_);
 
 
             // 리사이클뷰 내 아이템 클릭 시 이벤트
@@ -219,6 +233,15 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public RatingBar getItemAvgTasteBar() {
             return itemAvgTasteBar;
         }
+
+        public SeekBar getItemAvgPrice() {
+            return itemAvgPrice;
+        }
+
+        public SeekBar getItemAvgLuxury() {
+            return itemAvgLuxury;
+        }
+
         public TextView getItemAvgTaste() {
             return itemAvgTaste;
         }

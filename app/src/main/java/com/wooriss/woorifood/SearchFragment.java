@@ -3,6 +3,7 @@ package com.wooriss.woorifood;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ public class SearchFragment extends Fragment {
     private ImageView searchBtn;
     private ImageView mapBtn;
     private TextView nonText;
+    private ImageView nonImage;
     private SwipeRefreshLayout swipeSearchList;
 
     private static RecyclerView sikdangListRecyclerView;
@@ -76,6 +78,8 @@ public class SearchFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
+
+    public static int hadSearched = 0;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -89,10 +93,19 @@ public class SearchFragment extends Fragment {
 
         addListenerToSwipeSearchList();
 
-        if (sikdangListRecyclerView.getAdapter().getItemCount() <= 0)
+        if (sikdangListRecyclerView.getAdapter().getItemCount() <= 0) {
             setNullResult(true);
+        }
         else
             setNullResult(false);
+
+        if (hadSearched == 0) {
+            nonImage.setVisibility(View.VISIBLE);
+            setNullResult(false);
+        } else
+            nonImage.setVisibility(View.GONE);
+
+
     }
 
 
@@ -106,6 +119,7 @@ public class SearchFragment extends Fragment {
         searchBtn = v.findViewById(R.id.btn_search);
         mapBtn = v.findViewById(R.id.btn_map);
         nonText = v.findViewById(R.id.non_item);
+        nonImage = v.findViewById(R.id.non_item_img);
 
         swipeSearchList = v.findViewById(R.id.swipeSearchList);
 
@@ -216,6 +230,10 @@ public class SearchFragment extends Fragment {
     }
 
     public void setNullResult (boolean flag) {
+
+        if (hadSearched == 1)
+            nonImage.setVisibility(View.GONE);
+
         if (flag == true) {
             nonText.setVisibility(View.VISIBLE);
         }

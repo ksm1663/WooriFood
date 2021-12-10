@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class MainListFragment extends Fragment {
     private MapFragment reviewedMapFragment;
 
     public static List<Sikdang> mainSikdangList;
+
 
     public MainListFragment(){}
 
@@ -81,6 +83,7 @@ public class MainListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Log.d("plz", "i call UpdateService!");
+
 
         findViews(view);
 
@@ -218,6 +221,8 @@ public class MainListFragment extends Fragment {
 
 
         mainSikdangList = results;
+
+        Collections.sort(mainSikdangList);
         reviewdSikdangAdapter.updateData(mainSikdangList);
         reviewdSikdangAdapter.notifyDataSetChanged();
     }

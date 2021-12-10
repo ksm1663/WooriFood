@@ -311,7 +311,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="식사는 여유롭게 하셨나요? (필수)"
+                    android:text="식당이 혹시 붐비진 않았나요?(필수)"
                     android:textSize="17dp"
                     android:textColor="@color/deep_blue"
                     android:layout_gravity="center_vertical" />
@@ -343,7 +343,7 @@
                     android:id="@+id/radioComplexNormal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="무난"
+                    android:text="보통"
                     android:textSize="15dp"
                     android:fontFamily="@font/nanumsquareround"/>
                 <RadioButton
@@ -372,7 +372,7 @@
             <EditText
                 android:id="@+id/editComment"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="50dp"
                 android:background="@drawable/layout_radius_blue"
                 android:hint="기타 후기를 작성해주세요."
                 android:gravity="top"

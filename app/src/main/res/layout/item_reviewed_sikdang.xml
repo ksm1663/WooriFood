@@ -9,6 +9,7 @@
     android:background="?android:attr/selectableItemBackground">
 
     <RelativeLayout
+        android:id="@+id/relateMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="10dp"
@@ -17,7 +18,7 @@
         <LinearLayout
             android:id="@+id/lay_info"
             android:layout_width="300dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:orientation="vertical">
@@ -60,38 +61,6 @@
                     android:textColor="@color/dark_blue"
                     android:textSize="15dp" />
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="9dp">
-                <TextView
-                    android:text="맛"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@color/deep_blue"
-                    android:textSize="15dp"
-                    android:layout_marginRight="10dp"/>
-                <TextView
-                    android:id="@+id/item_avgTaste"
-                    android:text="점수"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@color/deep_blue"
-                    android:textSize="15dp" />
-                <RatingBar
-                    android:id="@+id/item_avgTasteBar"
-                    style="@style/Widget.AppCompat.RatingBar.Small"
-                    android:theme="@style/RatingBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="3dp"/>
-            </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
@@ -112,6 +81,106 @@
                 android:textSize="15dp"
                 android:layout_marginTop="3dp"
                 android:layout_gravity="center"/>
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/lay_info">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="9dp">
+                <TextView
+                    android:text="맛"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/deep_blue"
+                    android:textSize="15dp"
+                    android:layout_marginRight="3dp"/>
+                <TextView
+                    android:id="@+id/item_avgTaste"
+                    android:text="점수"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/deep_blue"
+                    android:visibility="gone"
+                    android:textSize="15dp" />
+                <RatingBar
+                    android:id="@+id/item_avgTasteBar"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:theme="@style/RatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="3dp"/>
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="9dp">
+                <TextView
+                    android:text="가격대"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/deep_blue"
+                    android:textSize="15dp"
+                    android:layout_marginRight="3dp"/>
+
+                <SeekBar
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/seekPrice_"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:max="30"
+                    android:progressDrawable="@drawable/valuebar_progress"
+                    android:thumb="@drawable/valuebar_thumb"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="-10dp"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+
+
+
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="고급짐"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/deep_blue"
+                    android:textSize="15dp"
+                    android:layout_marginRight="3dp"/>
+
+                <SeekBar
+                    android:id="@+id/seekLuxury_"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:max="30"
+                    android:progressDrawable="@drawable/valuebar_progress"
+                    android:thumb="@drawable/valuebar_thumb"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="-10dp"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+
+
+
+
         </LinearLayout>
 
     </RelativeLayout>

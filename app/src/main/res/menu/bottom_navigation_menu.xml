@@ -15,10 +15,10 @@
         android:id="@+id/page_3"
         android:enabled="true"
         android:icon="@drawable/ic_sharp"
-        android:title="내리뷰" />
+        android:title="My리뷰" />
     <item
         android:id="@+id/page_4"
         android:enabled="true"
         android:icon="@drawable/ic_bear"
-        android:title="내정보" />
+        android:title="My정보" />
 </menu>

@@ -155,6 +155,7 @@ public class FoodLocation {
         @Override
         public void onResponse(Call<PageListSikdang> call, Response<PageListSikdang> response) {
             if (response.isSuccessful()) {
+                SearchFragment.hadSearched = 1;
                 Log.d("plz", response + "");
                 Log.d("plz", "식당 결과 수: " + response.body().getMeta().total_count + "");
                 if ((searchfFragment != null) &&(response.body().getMeta().total_count > 0))

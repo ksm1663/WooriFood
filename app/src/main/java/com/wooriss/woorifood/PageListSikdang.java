@@ -40,7 +40,7 @@ class RegionInfo {
     String selected_region;   // 인식된 지역 리스트 중, 현재 검색
 }
 
-class Sikdang implements Serializable {
+class Sikdang implements Serializable, Comparable<Sikdang> {
     private String id;           // 장소 ID
     private String place_name;    // 장소명, 업체명
     private String category_name;   // 카테고리 이름
@@ -222,6 +222,14 @@ class Sikdang implements Serializable {
     public void setAvgLuxury(float avgLuxury) {
         this.avgLuxury = avgLuxury;
     }
+
+    @Override
+    public int compareTo(Sikdang sikdang) {
+        int distance = Integer.parseInt(sikdang.getDistance());
+        return Integer.parseInt(this.distance) - distance ;
+        //sikdang.getDistance().compareTo(this.distance);
+    }
+
 }
 
 
