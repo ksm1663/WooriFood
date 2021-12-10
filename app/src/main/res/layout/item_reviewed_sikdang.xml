@@ -8,13 +8,13 @@
     android:focusable="true"
     android:background="?android:attr/selectableItemBackground">
 
-
     <RelativeLayout
         android:id="@+id/relateMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="10dp"
         android:paddingTop="10dp">
+
         <LinearLayout
             android:id="@+id/lay_info"
             android:layout_width="300dp"
@@ -32,7 +32,6 @@
                 android:textSize="20dp" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/item_road_address_name"
                 android:text="주소"
                 android:layout_width="wrap_content"
