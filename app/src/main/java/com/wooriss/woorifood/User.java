@@ -45,6 +45,10 @@ public class User implements Serializable {
     public String getBranch_name() { return branch_name; }
     public String getBranch_addr() { return branch_addr; }
 
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
     public void setBranch_addr(String branch_addr) {
         this.branch_addr = branch_addr;
     }

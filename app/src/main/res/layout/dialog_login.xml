@@ -106,6 +106,9 @@
                 android:layout_width="330dp"
                 android:layout_height="45dp"
                 android:layout_marginStart="8dp"
+                android:enabled="true"
+                android:inputType="none"
+                android:focusableInTouchMode="false"
                 android:hint="소속지점" />
         </LinearLayout>
 

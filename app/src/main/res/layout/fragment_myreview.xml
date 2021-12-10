@@ -10,21 +10,28 @@
         android:orientation="horizontal"
         android:layout_gravity="center">
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:src="@drawable/ic_pork_left"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="내 리뷰다모아"
-        android:textSize="40dp"
+        android:textSize="30dp"
         android:textColor="@color/dark_blue"
         android:layout_gravity="center_vertical"/>
-        \<ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_pork_right"/>
     </LinearLayout>
+    <TextView
+        android:id="@+id/textCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="총 몇건"
+        android:textSize="16dp"
+        android:layout_gravity="center_horizontal"/>
 
     <LinearLayout
         android:layout_width="match_parent"

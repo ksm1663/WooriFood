@@ -165,7 +165,7 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
 
         reviewListInDetailView = v.findViewById(R.id.reviewListInDetailView);
         reviewSetList = new ArrayList<>();
-        reviewAdapter = new ReviewAdapter(reviewSetList);
+        reviewAdapter = new ReviewAdapter(reviewSetList, getContext());
 
         //아래구분선 세팅
         reviewListInDetailView.addItemDecoration(new DividerItemDecoration(getActivity().getApplicationContext(), DividerItemDecoration.VERTICAL));
@@ -471,13 +471,13 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
                         Log.d("plz", "onSuccess in downloadImage");
                         for (StorageReference item : listResult.getItems()) {
 //                            LinearLayout layout = (LinearLayout) findViews(R.id.);
-                            Log.d("plz", "item.getPath() : " + item.getPath());
+//                            Log.d("plz", "item.getPath() : " + item.getPath());
                             // reference 의 아이템(이미지) url 받아오기
                             item.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Uri> task) {
                                     if (task.isSuccessful()) {
-                                        Log.d("plz", "task.getResult() : " + task.getResult() );
+//                                        Log.d("plz", "task.getResult() : " + task.getResult() );
                                         images.add(task.getResult());
                                         ((ReviewAdapter)reviewListInDetailView.getAdapter()).notifyDetailImageViewAdaper();
                                         reviewAdapter.notifyDataSetChanged();
@@ -503,276 +503,14 @@ public class DetailFragment extends Fragment implements View.OnTouchListener{
 
 
     // inner Class : 리뷰아이템을 구성하는 클래스
-    public class ReviewSet {
-        private Review review;
-        private User user;
-        private List<Uri> images;
 
-        ReviewSet() {
-        }
-
-        public ReviewSet(Review review, User user, List<Uri> images) {
-            this.review = review;
-            this.user = user;
-            this.images = images;
-        }
-
-        public List<Uri> getImages() {
-            return images;
-        }
-
-        public Review getReview() {
-            return review;
-        }
-
-        public User getUser() {
-            return user;
-        }
-    }
 
 
     // inner Class : 디테일 프래그먼트의 리뷰 리스트에 넣을 리사이클러 어댑터
-    public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        private List<ReviewSet> reviewList;
-        private DetailImageViewAdapter detailImageViewAdapter;
 
-        public ReviewAdapter(List<ReviewSet> reviewList) {
-            this.reviewList = reviewList;
-        }
-
-        public void notifyDetailImageViewAdaper() {
-            if (detailImageViewAdapter != null)
-                detailImageViewAdapter.notifyDataSetChanged();
-        }
-
-
-        // 아이템 뷰를 위한 뷰홀더 객체를 생성하여 리턴
-        @NonNull
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            Context context = parent.getContext();
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.item_detail_sikdang, parent, false);
-
-            return new ReviewAdapter.ReviewItemHolder(view);
-        }
-
-
-        // position 에 해당하는 데이터를 뷰홀더의 아이템 뷰에 표시
-        @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            ReviewSet reviewSet = reviewList.get(position);
-
-            Timestamp uploadDate = reviewSet.getReview().getTimestamp();
-            User user = reviewSet.getUser();
-//            String uploadUser = reviewSet.getUser().getUser_name();
-            double ratingTaste = reviewSet.getReview().getTaste();
-
-            int price = reviewSet.getReview().getPrice();
-            int luxury = reviewSet.getReview().getLuxury();
-            int visit = reviewSet.getReview().getVisit();
-            int complex = reviewSet.getReview().getComplex();
-
-            String comment = reviewSet.getReview().getComment();
-
-            List<Uri> userImages = reviewSet.getImages();
-
-             detailImageViewAdapter = new DetailImageViewAdapter(userImages);
-//            ((ReviewItemHolder) holder).getImageListInDetailView().setHasFixedSize(true);
-            ((ReviewItemHolder) holder).getImageListInDetailView().setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-            ((ReviewItemHolder) holder).getImageListInDetailView().setAdapter(detailImageViewAdapter);
-
-            if ((userImages == null) || (userImages.size() <=0))
-                ((ReviewItemHolder) holder).getImageListInDetailView().setVisibility(View.GONE);
-            else
-                ((ReviewItemHolder) holder).getImageListInDetailView().setVisibility(View.VISIBLE);
-
-            if ((comment == null) || (comment.length() <=0))
-                ((ReviewItemHolder) holder).getLayComment().setVisibility(View.GONE);
-            else
-                ((ReviewItemHolder) holder).getLayComment().setVisibility(View.VISIBLE);
-
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd (HH:mm:ss)");
-            ((ReviewItemHolder) holder).getTextUploadDate().setText(format.format(uploadDate.toDate()));
-            String reviewerInfo = user.getUser_name() + " " + user.getUser_position() + " (" + user.getBranch_name() + ")";
-            ((ReviewItemHolder) holder).getTextUploadUser().setText(reviewerInfo);
-            ((ReviewItemHolder) holder).getRatingTaste().setRating((float) ratingTaste);
-
-            ((ReviewItemHolder) holder).getTextComment().setText(comment);
-
-            if (price == Code.PriceType.CHEAP)
-                ((ReviewItemHolder) holder).getRadioPrice().setText("쌈");
-            else if (price == Code.PriceType.NORMAL)
-                ((ReviewItemHolder) holder).getRadioPrice().setText("보통");
-            else
-                ((ReviewItemHolder) holder).getRadioPrice().setText("비쌈");
-
-            if (luxury == Code.LuxuryType.BAD)
-                ((ReviewItemHolder) holder).getRadioLuxury().setText("없음");
-            else if (luxury == Code.LuxuryType.NORMAL)
-                ((ReviewItemHolder) holder).getRadioLuxury().setText("무난");
-            else
-                ((ReviewItemHolder) holder).getRadioLuxury().setText("고급");
-
-            if (visit == Code.VisitType.FIRST)
-                ((ReviewItemHolder) holder).getRadioVisit().setText("1차");
-            else if (visit == Code.VisitType.SECOND)
-                ((ReviewItemHolder) holder).getRadioVisit().setText("2차");
-            else
-                ((ReviewItemHolder) holder).getRadioVisit().setText("3차");
-
-            if (complex == Code.ComplexType.COZY)
-                ((ReviewItemHolder) holder).getRadioComplex().setText("여유");
-            else if (complex == Code.ComplexType.NORMAL)
-                ((ReviewItemHolder) holder).getRadioComplex().setText("무난");
-            else
-                ((ReviewItemHolder) holder).getRadioComplex().setText("혼잡");
-//            ((ReviewItemHolder)holder).getImageListInDetailView().setAdapter();
-        }
-
-
-        @Override
-        public int getItemCount() {
-            if (reviewList != null)
-                return reviewList.size();
-            else
-                return 0;
-        }
-
-        // inner or inner Class : 이미지리스트 안에 들어갈 아이템
-        public class ReviewItemHolder extends RecyclerView.ViewHolder {
-            private TextView textUploadDate;
-            private TextView textUploadUser;
-            private RatingBar ratingTaste;
-
-            private RadioButton radioPrice;
-            private RadioButton radioLuxury;
-            private RadioButton radioVisit;
-            private RadioButton radioComplex;
-            private LinearLayout layComment;
-            private TextView textComment;
-
-            private RecyclerView imageListInDetailView;
-
-
-            ReviewItemHolder(View itemView) {
-                super(itemView);
-                textUploadDate = itemView.findViewById(R.id.textUploadDate);
-                textUploadUser = itemView.findViewById(R.id.textUploadUser);
-                ratingTaste = itemView.findViewById(R.id.ratingTaste);
-
-                radioPrice = itemView.findViewById(R.id.radioPrice);
-                radioLuxury = itemView.findViewById(R.id.radioLuxury);
-                radioVisit = itemView.findViewById(R.id.radioVisit);
-                radioComplex = itemView.findViewById(R.id.radioComplex);
-                layComment = itemView.findViewById(R.id.layComment);
-                textComment = itemView.findViewById(R.id.textComment);
-
-                imageListInDetailView = itemView.findViewById(R.id.imageListInDetailView);
-
-                //클릭 이벤트 달고 싶으면 itemView.setOnClickListener
-            }
-
-            public TextView getTextUploadDate() {
-                return textUploadDate;
-            }
-
-            public TextView getTextUploadUser() {
-                return textUploadUser;
-            }
-
-            public RatingBar getRatingTaste() {
-                return ratingTaste;
-            }
-
-            public RadioButton getRadioPrice() {
-                return radioPrice;
-            }
-
-            public RadioButton getRadioLuxury() {
-                return radioLuxury;
-            }
-
-            public RadioButton getRadioVisit() {
-                return radioVisit;
-            }
-
-            public RadioButton getRadioComplex() {
-                return radioComplex;
-            }
-
-            public LinearLayout getLayComment() {
-                return layComment;
-            }
-
-            public TextView getTextComment() {
-                return textComment;
-            }
-
-            public RecyclerView getImageListInDetailView() {
-                return imageListInDetailView;
-            }
-        }
-    }
 
 
     // inner of inner Class : 리뷰 내 이미지리스트 넣을 리사이클러 어댑터
-    public class DetailImageViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        private List<Uri> uriList;
 
-        public DetailImageViewAdapter(List<Uri> uriList) {
-            this.uriList = uriList;
-        }
-
-        // 아이템 뷰를 위한 뷰홀더 객체를 생성하여 리턴
-        @NonNull
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            Context context = parent.getContext();
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.item_image, parent, false);
-
-            ImageView ima_bigger_frame = (ImageView) view.findViewById(R.id.imageItem);
-            ima_bigger_frame.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, getResources().getDisplayMetrics());
-            ima_bigger_frame.getLayoutParams().width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, getResources().getDisplayMetrics());;
-            ima_bigger_frame.requestLayout();
-
-            return new DetailImageViewAdapter.ImageItemHolder(view);
-        }
-
-
-        // position 에 해당하는 데이터를 뷰홀더의 아이템 뷰에 표시
-        @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            Uri item = uriList.get(position);
-
-            Glide.with(context)
-                    .load(item)
-                    .into(((DetailImageViewAdapter.ImageItemHolder) holder).getImageView());
-        }
-
-        @Override
-        public int getItemCount() {
-            if (uriList != null)
-                return uriList.size();
-            else
-                return 0;
-        }
-
-        // inner or inner Class : 이미지리스트 안에 들어갈 아이템
-        public class ImageItemHolder extends RecyclerView.ViewHolder {
-
-            private ImageView imageView;
-
-            ImageItemHolder(View itemView) {
-                super(itemView);
-                imageView = itemView.findViewById(R.id.imageItem);
-                //클릭 이벤트 달고 싶으면 itemView.setOnClickListener
-            }
-            public ImageView getImageView() {
-                return imageView;
-            }
-        }
-    }
 
 }

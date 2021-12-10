@@ -85,4 +85,6 @@ dependencies {
     //mpandroid 그래프
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
+    implementation 'com.github.chathuralakmal:AndroidImagePopup:1.2.2'
+
 }

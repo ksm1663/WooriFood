@@ -36,6 +36,7 @@
             <EditText
                 android:id="@+id/edit_branch"
                 android:background="@color/transparent"
+                android:focusableInTouchMode="false"
                 android:layout_width="230dp"
                 android:layout_height="match_parent"
                 android:hint="지점 검색 "/>

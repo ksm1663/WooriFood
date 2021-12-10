@@ -122,7 +122,7 @@ public class SearchBranchDialog  extends Dialog {
         editSearch = findViewById(R.id.edit_search);
         // SPAN_EXCLUSIVE_EXCLUSIVE spans cannot have a zero length 땜에 넣었는데 안없어지넹 (삼성키보드-안드로이드 버그)
         editSearch.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        editSearch.setInputType(InputType.TYPE_NULL);
+//        editSearch.setInputType(InputType.TYPE_NULL);
         btnCancel = findViewById(R.id.btn_cancel);
         btnBack = findViewById(R.id.btn_search_back);
 

@@ -12,6 +12,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /*
  - 작성일 : 2021.10.03
@@ -75,6 +84,35 @@ public  class DownloadFile extends AsyncTask<String, Integer, Long> {
         BufferedReader reader ;
 
         try {
+
+            TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+
+                public X509Certificate[] getAcceptedIssuers() {
+
+                    return null;
+
+                }
+
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+
+                }
+
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+
+                }
+
+            } };
+
+
+
+            SSLContext sc = SSLContext.getInstance("SSL");
+
+            sc.init(null, trustAllCerts, new SecureRandom());
+
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+
+
             URL url = new URL (urlStr);
             conn = (HttpURLConnection) url.openConnection();
 
@@ -125,7 +163,9 @@ public  class DownloadFile extends AsyncTask<String, Integer, Long> {
             db.setTransactionSuccessful();
             reader.close();
 
-        } catch (IOException e) { // for openConnection()
+        } catch (IOException | NoSuchAlgorithmException e) { // for openConnection()
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
             e.printStackTrace();
         } finally {
             if (conn !=null)

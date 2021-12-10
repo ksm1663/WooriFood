@@ -54,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:enabled="true"
                 android:inputType="none"
+                android:focusableInTouchMode="false"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 

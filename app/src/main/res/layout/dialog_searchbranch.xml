@@ -25,6 +25,7 @@
             <EditText
                 android:id="@+id/edit_search"
                 android:layout_width="290dp"
+                android:enabled="true"
                 android:layout_height="wrap_content"
                 android:hint="지점 검색"/>
             <ImageButton

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +37,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,6 +56,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -233,12 +239,19 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
         switch (i) {
             case 0 : // 갤러리
                 intent = new Intent();
+                intent.setAction(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
-//                                           intent.setAction(Intent.ACTION_GET_CONTENT);
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true); // 다중선택 지원
-                intent.setAction(Intent.ACTION_PICK);
+                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
 
-                resultLauncher.launch(intent);
+                resultLauncher.launch(Intent.createChooser(intent, "Get Album"));
+//                intent = new Intent(Intent.ACTION_PICK);
+//                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+//                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true); // 다중선택 지원
+//                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                intent.setType("image/*");
+//                intent.setAction(Intent.ACTION_GET_CONTENT);
+//                resultLauncher.launch(intent);
 
                 break;
 
@@ -387,6 +400,21 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
         return uri;
 //        return path;
     }
+
+    // 절대경로 파악할 때 사용된 메소드
+    @Nullable
+    public String createCopyAndReturnRealPath(@NonNull Uri uri) {
+        String [] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader cursorLoader = new CursorLoader(context,uri,proj,null,null,null);
+
+        Cursor cursor = cursorLoader.loadInBackground();
+        int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+        cursor.moveToFirst();
+
+        return cursor.getString(index);
+    }
+
 
 
 
@@ -543,6 +571,7 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
         for (int i=0; i< imageList.size(); i++) {
 //            StorageReference tmpRef = storageRef.child("reviewImages/" + pathname + imageList.get(i).getImgUri().getLastPathSegment());
             StorageReference tmpRef = storageRef.child("reviewImages/" + pathname +"/" + filename + "_" + i);
+            Log.d("plz", "이미지 절대 경로 : " + getRealPathFromURI(imageList.get(i).getImgUri()).getPath().toString());
             UploadTask uploadTask = tmpRef.putFile(getRealPathFromURI(imageList.get(i).getImgUri()));
 
             int tmp = i;
