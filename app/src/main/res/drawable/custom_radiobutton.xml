@@ -8,8 +8,9 @@
 
 <!--    -->
     <!--  라디오버튼 체크 되었을 때  -->
+<!--    android:drawable="@drawable/ic_review">-->
     <item android:state_checked="true"
-        android:drawable="@drawable/ic_review">
+        android:drawable="@drawable/ic_review">>
     </item>
 
 

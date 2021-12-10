@@ -43,8 +43,7 @@
 
 <!--        android:windowSoftInputMode="adjustPan"-->
         <activity
-            android:name=".MainActivity"
-            android:windowSoftInputMode="adjustResize">
+            android:name=".MainActivity">
         </activity>
 
         <!--카카오맵 활용을 위한 KEY 추가 -->

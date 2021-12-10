@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
@@ -163,7 +164,7 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     // inner Class - 리뷰 있는 리스트 아이템
-    public class ReviewedSikdangItemViewHolder extends RecyclerView.ViewHolder {
+    public class ReviewedSikdangItemViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener{
         private TextView itemPlaceNameView;
         private TextView itemRoadAddressNameView;
         private TextView itemDistanceView;
@@ -185,6 +186,9 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             itemAvgPrice = itemView.findViewById(R.id.seekPrice_);
             itemAvgLuxury = itemView.findViewById(R.id.seekLuxury_);
+
+            itemAvgPrice.setOnTouchListener(this);
+            itemAvgLuxury.setOnTouchListener(this);
 
 
             // 리사이클뷰 내 아이템 클릭 시 이벤트
@@ -247,6 +251,11 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
         public TextView getItemReviewCnt() {
             return itemReviewCnt;
+        }
+
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            return true;
         }
     }
 }
