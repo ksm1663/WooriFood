@@ -298,6 +298,10 @@ public class SearchFragment extends Fragment {
                             sikdangList.get(pos).setAvgTaste(sikdang.getAvgTaste());
                             sikdangList.get(pos).setNumRatings(sikdang.getNumRatings());
 
+                            sikdangList.get(pos).setAvgPrice(sikdang.getAvgPrice());
+                            sikdangList.get(pos).setAvgLuxury(sikdang.getAvgLuxury());
+                            sikdangList.get(pos).setTitleImage(sikdang.getTitleImage());
+
                         } else {                    // 리뷰 없는 식당인 경우
                             Log.d("plz", "null is mean default item set!! : " + baseSikdangId + ", pos" + pos);
                             sikdangList.get(pos).setViewType(Code.ViewType.DEFAULT_SIKDANG);

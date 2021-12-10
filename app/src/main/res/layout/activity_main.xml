@@ -17,10 +17,11 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:menu="@menu/bottom_navigation_menu"
-        app:itemIconTint="@color/deep_blue"
-        app:itemTextColor="@color/deep_blue"/>
+        android:layout_height="67dp"
+        android:background="@color/black_blue"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:menu="@menu/bottom_navigation_menu" />
 
 
 <!--    &lt;!&ndash; 하단 탭(프래그먼트 이동메뉴바)를 위한 공간 &ndash;&gt;-->

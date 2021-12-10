@@ -1,8 +1,5 @@
 package com.wooriss.woorifood;
 
-import com.google.firebase.database.Exclude;
-import com.google.firebase.firestore.FieldValue;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -70,6 +67,8 @@ class Sikdang implements Serializable, Comparable<Sikdang> {
 
     private int numRatings;
     private int viewType;
+
+    private String titleImage;
 
 
 
@@ -221,6 +220,14 @@ class Sikdang implements Serializable, Comparable<Sikdang> {
 
     public void setAvgLuxury(float avgLuxury) {
         this.avgLuxury = avgLuxury;
+    }
+
+    public String getTitleImage() {
+        return titleImage;
+    }
+
+    public void setTitleImage(String titleImage) {
+        this.titleImage = titleImage;
     }
 
     @Override

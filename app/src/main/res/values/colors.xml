@@ -33,6 +33,19 @@
     <color name="productGridBackgroundColor">#FFFFFF</color>
     <color name="textInputOutlineColor">#FBB8AC</color>
 
+    <!--    //블랙에 약간 블루-->
+    <color name="black_blue">#FF07102F</color>
+    <!--    //블랙 + 화이트 1-->
+    <color name="black_w">#FF323232</color>
+    <!--    //블랙 + 화이트 2-->
+    <color name="black_ww">#FF07102F</color>
+<!--    //블랙 + 화이트 3-->
+    <color name="black_www">#FF07102F</color>
+<!--    //블랙 + 화이트 4-->
+    <color name="black_wwww">#FF07102F</color>
+
+
+
 
 </resources>
 

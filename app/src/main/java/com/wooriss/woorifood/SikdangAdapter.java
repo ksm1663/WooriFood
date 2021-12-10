@@ -3,11 +3,14 @@ package com.wooriss.woorifood;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -15,14 +18,31 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.ViewTarget;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.List;
 
 public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Sikdang> sikdangs;
+    private Uri titleUri;
+    private Context context;
 
     SikdangAdapter(List<Sikdang> sikdangs) {
         if (sikdangs == null)
             this.sikdangs = sikdangs;
+
     }
 
     public void updateData(List<Sikdang> sikdangs) {
@@ -33,8 +53,9 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 //        View view;
-//        Context context = parent.getContext();
+         context = parent.getContext();
 //        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
 
         View itemView;
         Log.d("plz", "Code.ViewType : " + viewType);
@@ -46,7 +67,7 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else
         {
             Log.d("plz", "Code.ViewType.REVIEWED_SIKDANG" );
-            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_reviewed_sikdang, parent, false);
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_reviewed_sikdang_ver2, parent, false);
             return new ReviewedSikdangItemViewHolder(itemView);
         }
     }
@@ -73,6 +94,8 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             String road_address_name = sikdang.getRoad_address_name();
             String distance = sikdang.getDistance();
 
+            String titleImage = sikdang.getTitleImage();
+
             int numRatings = sikdang.getNumRatings();
             double avgTaste = sikdang.getAvgTaste();
             float avgPrice = sikdang.getAvgPrice();
@@ -92,7 +115,60 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((ReviewedSikdangItemViewHolder)viewHolder).getItemAvgPrice().setProgress((int)(avgPrice*10));
             ((ReviewedSikdangItemViewHolder)viewHolder).getItemAvgLuxury().setProgress((int)(avgLuxury*10));
 
+//            ((ReviewedSikdangItemViewHolder)viewHolder).getImgSikdangTitle().setImage
+            Log.d("plz", "NOW : " + sikdang.getPlace_name() + " / ");
+            if (titleImage != null) {
+                Log.d("plz", "NOW : " + sikdang.getPlace_url() + " / ");
+                getImgSikdangTitle(titleImage, ((ReviewedSikdangItemViewHolder) viewHolder).getImgSikdangTitle());
+            }
+            else
+                ((ReviewedSikdangItemViewHolder) viewHolder).getImgSikdangTitle().setImageResource(R.drawable.ic_full);
+
+
         }
+    }
+
+
+    private void getImgSikdangTitle(String docName, ImageView imageView) {
+        FirebaseStorage storageRef = FirebaseStorage.getInstance();
+        StorageReference listRef = storageRef.getReference("reviewImages").child(docName);
+
+        Log.d("plz", "listRef : " + listRef);
+        listRef.listAll()
+                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                    @Override
+                    public void onSuccess(ListResult listResult) {
+                        Log.d("plz", "onSuccess in downloadImage : " + listResult.getItems().size());
+                        if (listResult.getItems().size() > 0) {
+                            listResult.getItems().get(0).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+
+                                    if (task.isSuccessful()) {
+                                        imageView.setImageURI(task.getResult());
+                                        RequestOptions requestOptions = new RequestOptions();
+                                        requestOptions = requestOptions.transform(new CenterCrop(), new RoundedCorners(55));
+                                        Glide.with(context)
+                                                .load(task.getResult())
+                                                .apply(requestOptions)
+//                                                .circleCrop()
+                                                .into(imageView);
+                                    }else {
+
+                                    }
+
+                                }
+                            });
+                        }
+                    } // end onSuccess
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //
+            }
+        });
+
+
     }
 
     @Override
@@ -175,6 +251,8 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private SeekBar itemAvgPrice;
         private SeekBar itemAvgLuxury;
 
+        private ImageView imgSikdangTitle;
+
         ReviewedSikdangItemViewHolder(View itemView) {
             super(itemView);
             itemPlaceNameView = itemView.findViewById(R.id.item_place_name);
@@ -186,6 +264,8 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             itemAvgPrice = itemView.findViewById(R.id.seekPrice_);
             itemAvgLuxury = itemView.findViewById(R.id.seekLuxury_);
+
+            imgSikdangTitle = itemView.findViewById(R.id.imgSikdangTitle);
 
             itemAvgPrice.setOnTouchListener(this);
             itemAvgLuxury.setOnTouchListener(this);
@@ -252,6 +332,12 @@ public class SikdangAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public TextView getItemReviewCnt() {
             return itemReviewCnt;
         }
+
+
+        public ImageView getImgSikdangTitle() {
+            return imgSikdangTitle;
+        }
+
 
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {

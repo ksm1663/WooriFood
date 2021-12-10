@@ -503,6 +503,9 @@ public class ReviewFragment extends Fragment implements RatingBar.OnRatingBarCha
                         _sikdang.setAvgPrice(newPriceTotal);
                         _sikdang.setAvgLuxury(newLuxuryTotal);
 
+                        if (imageList.size() > 0)
+                            _sikdang.setTitleImage(reviewDocName);
+
                         // Update sikdang
                         transaction.set(sikdangRef, _sikdang);
 
